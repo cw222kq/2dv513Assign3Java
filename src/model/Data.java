@@ -3,17 +3,20 @@
  */
 package model;
 
+import java.io.Serializable;
+
 /**
  * @author cw222kq
  *
  */
-public class Data {
+@SuppressWarnings("serial")
+public class Data implements Serializable{
 
 	private int studentId;
 	private String studentName;
 	private int studentYear;
 	private int courseId;
-	private char grade;
+	private int grade;
 	private String courseName;
 	private int teacherId;
 	private String teacherName;
@@ -44,7 +47,7 @@ public class Data {
 	public void setCourseId(int courseId){
 		this.courseId = courseId;
 	}
-	public void setGrade(char grade){
+	public void setGrade(int grade){
 		this.grade = grade;
 	}
 	public void setCourseName(String courseName){
@@ -68,7 +71,7 @@ public class Data {
 	public int getCourseId(){
 		return this.courseId;
 	}
-	public char getGrade(){
+	public int getGrade(){
 		return this.grade;
 	}
 	public String getCourseName(){

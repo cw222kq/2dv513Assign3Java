@@ -3,6 +3,8 @@
  */
 package view;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 /**
@@ -12,10 +14,11 @@ import java.util.Scanner;
 public class Console {
 	
 	public boolean start = true;
-	static Scanner scan = new Scanner(System.in);
+	static Scanner scan;
 	static Scanner scanner = new Scanner(System.in);
 	static Scanner in = new Scanner(System.in);
 	protected char inputResult;
+	protected boolean valid = false;
 	
 
 	/**
@@ -51,53 +54,50 @@ public class Console {
 	    } 
 	    catch (java.io.IOException e) {
 	      System.out.println("inne i catchen");
-	      System.out.println("" + e);
+	      System.err.println("" + e);
 	      
 	      return 0;
 	    }
 	}
 	// Will be executed if the user choose 1
-	public void printInsertDataMenu(model.Student m_student, model.Teacher m_teacher, model.Course m_course, model.Data m_data){
+	public void printInsertDataMenu(model.Student m_student, model.Teacher m_teacher, model.Course m_course){
 		
-		System.out.println("1. INSERT DATA");
+		System.out.println("INSERT DATA");
 		System.out.println("INSERT DATA ABOUT THE STUDENT");
-		System.out.println("Insert student id");
+		validateInputInteger("Insert student id");
 		m_student.setId(scan.nextInt());
-		System.out.println("Insert student name");
+		validateInputString("Insert student name");
 		m_student.setName(scanner.nextLine());
-		System.out.println("Insert student year");
+		validateInputInteger("Insert student year");
 		m_student.setYear(scan.nextInt());
-		System.out.println("Insert student grade");
-		m_student.setGrade(scanner.nextLine());
+		validateInputInteger("Insert student grade");
+		m_student.setGrade(scan.nextInt());
 		System.out.println("INSERT DATA ABOUT THE COURSE");
-		System.out.println("Insert course id");
-		m_course.setId(scan.nextInt()); 
-		System.out.println("Insert course name");
+		validateInputInteger("Insert course id");
+		m_course.setId(scan.nextInt());
+		validateInputString("Insert course name");
 		m_course.setName(scanner.nextLine());
 		System.out.println("INSERT DATA ABOUT THE TEACHER");
-		System.out.println("Insert teacher id");
-		m_teacher.setId(scan.nextInt()); 
-		System.out.println("Insert teacher name");
+		validateInputInteger("Insert teacher id");
+		m_teacher.setId(scan.nextInt());
+		validateInputString("Insert teacher name");
 		m_teacher.setName(scanner.nextLine());
+	
 		scan.close();
 		scanner.close();
-		
-		// gör till egen metod i metoden IOM att en metod inte ska göra två saker
-		m_data.setStudentId( m_student.getId());
-		m_data.setStudentName(m_student.getName());
-		m_data.setStudentYear(m_student.getYear());
-		m_data.setGrade(m_student.getGrade());
-		m_data.setCourseId(m_course.getId());
-		m_data.setCourseName(m_course.getName());
-		m_data.setTeacherId(m_teacher.getId());
-		m_data.setTeacherName(m_teacher.getName());
-		
 		
 	}
 	// Will be executed if the user choose 2
 	public void printOutputDataMenu(){
 		
-		System.out.println("2. OUTPUT DATA");
+		System.out.println("OUTPUT DATA");
+		System.out.println("CHOOSE WHICH DATA YOU WANT TO FETCH");
+		System.out.println("<1> GET AVERAGE OF GRADE FROM THE WHOLE SCHOOL");
+		System.out.println("<2> GET AVERAGE OF GRADE FROM A SPECIFIC COURSE");
+		System.out.println("<3> GET AVERAGE OF GRADE ON A SPECIFIC STUDENT");
+		System.out.println("<4> IN WHICH COURSES DOES A SPECIFIC STUDENT PERFORMS BEST (i.e is an A- student)");
+		System.out.println("<5> GET ALL THE GRADES IN ALL THE COURSES FOR A SPECIFIC STUDENT");
+		
 			
 	}
 	// Will be executed if the user choose Q
@@ -115,8 +115,90 @@ public class Console {
 	public void printArray(model.FileData a_fileData, Iterable<model.Data> a_data){
 		for(model.Data d: a_data){
 			System.out.println("Student id: " + d.getStudentId() + ", " + "Student name: " + d.getStudentName()+ ", " + "Årskurs: " + d.getStudentYear() + ", " + "Kursid: " + d.getCourseId() + ", " + "Betyg: " + d.getGrade() + ", " + "Kursnamn: " + d.getCourseName() + ", " + "Lärarid: " + d.getTeacherId() + ", " + "Lärare: "  + d.getTeacherName());
+		}	
+	}
+	public void printErrorMessage(Exception e){
+		System.err.println(e);
+	}
+	// validate the input value and checks that it is not an integer
+	protected void validateInputString(String inputMessage){
+		valid = false;
+		while (valid == false) {
+			System.out.println(inputMessage);
+			scanner = new Scanner(System.in);
+			if(!scanner.hasNextInt()){
+				valid = true;
+			}
+			else {
+				System.err.println("The input value have to be a STRING. Try again!");
+			}
+			
+		}
+	}
+	// validate the input value and checks that it is an integer
+	protected void validateInputInteger(String inputMessage){
+		valid = false;
+		while (valid == false){
+			System.out.println(inputMessage);
+			scan = new Scanner(System.in);
+			if(scan.hasNextInt()){
+				valid = true;
+			}
+			else {
+				System.err.println("The input value have to be a NUMBER. Try again!");
+			}
+			
+		
+		}
+	}
+	public void printResultFromAvgGradeSchool(ResultSet r) {
+		try {
+			while(r.next()){
+				System.out.println("Average grade set by school is: " + r.getInt("value"));
+			}	
+		} catch (SQLException e){
+			System.err.println(e.getMessage());
 		}
 		
 	}
+	public void printResultFromAvgGradeCourse (ResultSet r, String theCourse){
+		try {
+			while(r.next()){
+				System.out.println("Average grade in the course, " + theCourse +"," + " is: " + r.getInt("value"));
+			}	
+		} catch (SQLException e){
+			System.err.println(e.getMessage());
+		}
+	}
+	public void printResultFromAvgGradeStudent (ResultSet r, String theStudent){
+		try {
+			while(r.next()){
+				System.out.println("Average grade for the student, " + theStudent +"," + " is: " + r.getInt("value"));
+			}	
+		} catch (SQLException e){
+			System.err.println(e.getMessage());
+		}
+	}
+	public void printResultFromAGradedCoursesForStudent (ResultSet r, String theStudent){
+		try {
+			while(r.next()){
+				System.out.println("Courses where the student, " + theStudent +"," + " is graded with A is: " + r.getString("name"));
+			}	
+		} catch (SQLException e){
+			System.err.println(e.getMessage());
+		}
+	}
+	public void printResultFromCoursesForStudent (ResultSet r, String theStudent){
+		try {
+			while(r.next()){
+				System.out.println("Results for the student, " + theStudent +":");
+				System.out.println("Course: " + r.getString("name") + "\t" + r.getInt("value"));
+			}	
+		} catch (SQLException e){
+			System.err.println(e.getMessage());
+		}
+	}
+	
+		
 	
 }

@@ -15,11 +15,11 @@ public class Student {
 	private int year;
 	private int course_id;
 	//private Grade grade;
-	private char grade;
+	private int grade;
 	
 
 	// Constructor with arguments to set the values
-	public Student(int id, String name, int year, int course_id, char grade) {
+	public Student(int id, String name, int year, int course_id, int grade) {
 
 		this.id = id;
 		this.year = year;
@@ -56,7 +56,7 @@ public class Student {
 	public int getCourseId(){
 		return this.course_id;
 	}
-	public char getGrade() {
+	public int getGrade() {
 		return this.grade;
 	}
 	// creates setters for the values
@@ -72,8 +72,8 @@ public class Student {
 	public void setCourseId(int newCourse_id){
 		this.course_id = newCourse_id;
 	}
-	public void setGrade(String newGrade) {
-		this.grade = newGrade.charAt(0);
+	public void setGrade(int newGrade) {
+		this.grade = newGrade;
 	}
 
 }
