@@ -15,7 +15,7 @@ public class App {
 		
 	}
 	// initiates the values
-	private char inputResult;
+	char inputResult;
 	model.Student a_student = new model.Student();
 	model.Course a_course = new model.Course();
 	model.Teacher a_teacher = new model.Teacher();
@@ -39,28 +39,64 @@ public class App {
 		a_view.printStartMenu();
 		
 		// getting the input from the user
+		a_view.setUsersChoice();
 		inputResult = a_view.getUsersChoice();
 		
-		// 1 = Insert data
+		// 1 = Insert data 
 		if(inputResult == '1') {
 			
-			// present the insert menu to the user
+			// present the insert menu to the user 
 			a_view.printInsertDataMenu(a_student, a_teacher, a_course);
 			
+			// setting and getting the input from the user 
+			a_view.setUsersChoice();
+			inputResult = a_view.getUsersChoice();
+			
+			// teacher
+			if(inputResult == '1'){
+				a_view.printInsertTeacher(a_teacher);
+				a_data.setTeacherName(a_teacher.getName());
+				
+			}
+			// student
+			if(inputResult == '2') {
+				
+			}
+			// course
+			if(inputResult == '3') {
+				
+			}
+			// grade
+			if(inputResult == '4') {
+				
+			}
+			
 			// transfer the data to the Data class
-			a_data.setStudentId(a_student.getId());
-			a_data.setStudentName(a_student.getName());
-			a_data.setStudentYear(a_student.getYear());
-			a_data.setGrade(a_student.getGrade());
-			a_data.setCourseId(a_course.getId());
-			a_data.setCourseName(a_course.getName());
-			a_data.setTeacherId(a_teacher.getId());
-			a_data.setTeacherName(a_teacher.getName());
+			//a_data.setStudentId(a_student.getId());
+			//a_data.setCourseId(a_course.getId());
+			//a_data.setTeacherId(a_teacher.getId());
+			
+			// teacher
+			//a_data.setTeacherName(a_teacher.getName());
+			
+			// student
+			//a_data.setStudentName(a_student.getName());
+			//a_data.setStudentYear(a_student.getYear());
+			
+			
+			
+			// add the inserted data to the array list in filedata
 			a_fileData.getListOfData().add(a_data);
+			a_view.printArray(a_fileData, a_fileData.getArray());
+			
+			
+			
+			/*a_data.setGrade(a_student.getGrade());
+			a_data.setCourseName(a_course.getName());*/
 			
 			// insert the data in the database
 			try {
-			
+				
 				a_db.insert(a_fileData);
 				
 			} catch (SQLException e) {
@@ -68,7 +104,7 @@ public class App {
 				a_view.printErrorMessage(e);;
 			}
 			
-			a_view.printArray(a_fileData, a_fileData.getArray());
+			//a_view.printArray(a_fileData, a_fileData.getArray());
 		}
 		// 2 = Output data
 		if(inputResult == '2') {

@@ -10,44 +10,18 @@ package model;
 public class Student {
 	
 	// initiates the values
-	private int id;
+	//private int id;
 	private String name;
 	private int year;
 	private int course_id;
-	//private Grade grade;
 	private int grade;
 	
-
-	// Constructor with arguments to set the values
-	public Student(int id, String name, int year, int course_id, int grade) {
-
-		this.id = id;
-		this.year = year;
-		this.course_id = course_id;
-		this.grade = grade;
-		
-		
-	}
-	// Constructor without arguments
-	public Student() {
-
-		
-	}
-	// initiates the grade values
-	/*private enum Grade {
-		A,
-		B,
-		C,
-		D,
-		E,
-		F;
-		
-	}*/
 	// creates getters for the values
-	public int getId(){
+	/*public int getId(){
 		return this.id;
-	}
+	}*/
 	public String getName(){
+		System.out.println("get metoden i name student körs");
 		return this.name;
 	}
 	public int getYear(){
@@ -60,9 +34,9 @@ public class Student {
 		return this.grade;
 	}
 	// creates setters for the values
-	public void setId(int newID){
-		this.id = newID;
-	}
+	/*public void setId(int inID){
+		this.id = inID;
+	}*/
 	public void setName(String newName){
 		this.name = newName;
 	}

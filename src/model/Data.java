@@ -12,16 +12,17 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class Data implements Serializable{
 
-	private int studentId;
+	//private int studentId;
 	private String studentName;
 	private int studentYear;
-	private int courseId;
+	//private int courseId;
 	private int grade;
 	private String courseName;
-	private int teacherId;
+	//private int teacherId;
 	private String teacherName;
 	
-	public Data(int studentId, String studentName, int studentYear, int courseId, char grade, String courseName, int teacherId, String teacherName) {
+	// with id
+	/*public Data(int studentId, String studentName, int studentYear, int courseId, char grade, String courseName, int teacherId, String teacherName) {
 		
 		this.studentId = studentId;
 		this.studentName = studentName;
@@ -32,54 +33,66 @@ public class Data implements Serializable{
 		this.teacherId = teacherId;
 		this.teacherName = teacherName;
 		
+	}*/
+	// without id
+	public Data(String studentName, int studentYear, int grade, String courseName, String teacherName) {
+		
+		this.studentName = studentName;
+		this.studentYear = studentYear;
+		this.grade = grade;
+		this.courseName = courseName;
+		this.teacherName = teacherName;
+		
 	}
 	public Data(){}
 	
-	public void setStudentId(int studentId){
+	// setters
+	/*public void setStudentId(int studentId){
 		this.studentId = studentId;
-	}
+	}*/
 	public void setStudentName(String studentName){
 		this.studentName = studentName;
 	}
 	public void setStudentYear(int studentYear){
 		this.studentYear = studentYear;
 	}
-	public void setCourseId(int courseId){
+	/*public void setCourseId(int courseId){
 		this.courseId = courseId;
-	}
+	}*/
 	public void setGrade(int grade){
 		this.grade = grade;
 	}
 	public void setCourseName(String courseName){
 		this.courseName = courseName;
 	}
-	public void setTeacherId(int teacherId){
+	/*public void setTeacherId(int teacherId){
 		this.teacherId = teacherId;
-	}
+	}*/
 	public void setTeacherName(String teacherName){
 		this.teacherName = teacherName;
 	}
-	public int getStudentId(){
+	// getters
+	/*public int getStudentId(){
 		return this.studentId;
-	}
+	}*/
 	public String getStudentName(){
 		return this.studentName;
 	}
 	public int getStudentYear(){
 		return this.studentYear;
 	}
-	public int getCourseId(){
+	/*public int getCourseId(){
 		return this.courseId;
-	}
+	}*/
 	public int getGrade(){
 		return this.grade;
 	}
 	public String getCourseName(){
 		return this.courseName;
 	}
-	public int getTeacherId(){
+	/*public int getTeacherId(){
 		return this.teacherId;
-	}
+	}*/
 	public String getTeacherName(){
 		return this.teacherName;
 	}

@@ -15,10 +15,10 @@ public class Console {
 	
 	public boolean start = true;
 	static Scanner scan;
-	static Scanner scanner = new Scanner(System.in);
-	static Scanner in = new Scanner(System.in);
+	static Scanner scanner;
 	protected char inputResult;
 	protected boolean valid = false;
+	char inChar;
 	
 
 	/**
@@ -37,16 +37,19 @@ public class Console {
 			System.out.println("<Q> Quit");
 			start = false;
 		}
-		setUsersChoice();
+		//setUsersChoice();
 		
 		
 		
 	}
 	// Get the input value from the keyboard. Written with inspiration from: https://stackoverflow.com/questions/15446689/what-is-the-use-of-system-in-read
-	protected static char getInput() {
-		char inChar;
+	protected char getInput() {
 	    try {
 	      inChar = Character.toUpperCase((char)System.in.read());
+	      // don´t return value if value is enter or line feed
+	      while (inChar == '\r' || inChar =='\n') {
+		        inChar = (char)System.in.read();
+		  }
 	      System.out.print("You entered ");
 	      System.out.println(inChar);
 	     
@@ -59,35 +62,59 @@ public class Console {
 	      return 0;
 	    }
 	}
-	// Will be executed if the user choose 1
+	// Will be executed if the user choose 1 from the start menu
 	public void printInsertDataMenu(model.Student m_student, model.Teacher m_teacher, model.Course m_course){
 		
-		System.out.println("INSERT DATA");
-		System.out.println("INSERT DATA ABOUT THE STUDENT");
-		validateInputInteger("Insert student id");
-		m_student.setId(scan.nextInt());
-		validateInputString("Insert student name");
-		m_student.setName(scanner.nextLine());
-		validateInputInteger("Insert student year");
+		System.out.println("INSERT DATA...");
+		System.out.println("<1> ABOUT THE TEACHER");
+		System.out.println("<2> ABOUT THE STUDENT");
+		System.out.println("<3> ABOUT THE COURSE");
+		System.out.println("<4> GRADE");
+		
+		
+		//setUsersChoice();
+		
+		
+		
+		//System.out.println("INSERT DATA ABOUT THE STUDENT");
+		/*validateInputInteger("Insert student id");
+		m_student.setId(scan.nextInt());*/ 
+		
+		// student
+		/*validateInputInteger("Insert student year");
 		m_student.setYear(scan.nextInt());
-		validateInputInteger("Insert student grade");
+		System.out.println(m_student.getYear());
+		validateInputString("Insert student name");
+		m_student.setName(scanner.nextLine());	*/
+		
+		
+		/*validateInputInteger("Insert student grade");
 		m_student.setGrade(scan.nextInt());
-		System.out.println("INSERT DATA ABOUT THE COURSE");
-		validateInputInteger("Insert course id");
-		m_course.setId(scan.nextInt());
-		validateInputString("Insert course name");
+		System.out.println("INSERT DATA ABOUT THE COURSE");*/
+		
+		/*validateInputInteger("Insert course id");
+		m_course.setId(scan.nextInt());*/
+		
+		/*validateInputString("Insert course name");
 		m_course.setName(scanner.nextLine());
-		System.out.println("INSERT DATA ABOUT THE TEACHER");
-		validateInputInteger("Insert teacher id");
-		m_teacher.setId(scan.nextInt());
-		validateInputString("Insert teacher name");
-		m_teacher.setName(scanner.nextLine());
-	
-		scan.close();
-		scanner.close();
+		System.out.println("INSERT DATA ABOUT THE TEACHER");*/
+		
+		/*validateInputInteger("Insert teacher id");
+		m_teacher.setId(scan.nextInt());*/
+		
+		
+		// teacher FUNKAR ÄNTLIGEN!!!
+		/*validateInputString("Insert teacher name");
+		while (scanner.hasNext()) {
+			    System.out.print(scanner.nextLine());
+			    m_teacher.setName(scanner.nextLine());
+			    System.out.println("Teacher name: " + m_teacher.getName());
+			    return;
+		}*/
+			
 		
 	}
-	// Will be executed if the user choose 2
+	// Will be executed if the user choose 2 from the start menu
 	public void printOutputDataMenu(){
 		
 		System.out.println("OUTPUT DATA");
@@ -100,13 +127,23 @@ public class Console {
 		
 			
 	}
-	// Will be executed if the user choose Q
+	// Will be executed if the user choose Q from the start menu
 	public void quit(){
 		System.out.println("Q. Quit");
 		System.exit(0);
 		
 	}
-	protected void setUsersChoice(){
+	// Will be executed if the user choose 1 from the insert menu
+	public void printInsertTeacher(model.Teacher m_teacher){
+		validateInputString("Insert teacher name");
+		while (scanner.hasNext()) {
+			    System.out.print(scanner.nextLine());
+			    m_teacher.setName(scanner.nextLine());
+			    System.out.println("Teacher name: " + m_teacher.getName());
+			    return;
+		}	
+	}
+	public void setUsersChoice(){
 		inputResult = getInput();
 	}
 	public char getUsersChoice(){
@@ -114,7 +151,15 @@ public class Console {
 	}
 	public void printArray(model.FileData a_fileData, Iterable<model.Data> a_data){
 		for(model.Data d: a_data){
-			System.out.println("Student id: " + d.getStudentId() + ", " + "Student name: " + d.getStudentName()+ ", " + "Årskurs: " + d.getStudentYear() + ", " + "Kursid: " + d.getCourseId() + ", " + "Betyg: " + d.getGrade() + ", " + "Kursnamn: " + d.getCourseName() + ", " + "Lärarid: " + d.getTeacherId() + ", " + "Lärare: "  + d.getTeacherName());
+			// with id
+			//System.out.println("Student id: " + d.getStudentId() + ", " + "Student name: " + d.getStudentName()+ ", " + "Årskurs: " + d.getStudentYear() + ", " + "Kursid: " + d.getCourseId() + ", " + "Betyg: " + d.getGrade() + ", " + "Kursnamn: " + d.getCourseName() + ", " + "Lärarid: " + d.getTeacherId() + ", " + "Lärare: "  + d.getTeacherName());
+			// without id
+			//System.out.println("Student name: " + d.getStudentName() + ", " + "Årskurs: " + d.getStudentYear() + ", " + "Betyg: " + d.getGrade() + ", " + "Kursnamn: " + d.getCourseName() + ", " + "Lärare: "  + d.getTeacherName());
+			
+			// student
+			//System.out.println("Student name: " + d.getStudentName() + ", " + "Årskurs: " + d.getStudentYear());
+			//teacher
+			System.out.println("Lärare: "  + d.getTeacherName());
 		}	
 	}
 	public void printErrorMessage(Exception e){
@@ -151,6 +196,11 @@ public class Console {
 		
 		}
 	}
+	// print out successful message about inserting the data in the database
+	public void printSuccessfullyMessage(){
+		System.out.println("The data was successfully inserted into the database");
+	}
+	// print out results from queries
 	public void printResultFromAvgGradeSchool(ResultSet r) {
 		try {
 			while(r.next()){

@@ -32,20 +32,28 @@ public class DB {
         statement = connection.createStatement();
         
         // create tables if they not already exists
+        statement.executeUpdate("CREATE TABLE IF NOT EXISTS Teacher(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)");
         statement.executeUpdate("CREATE TABLE IF NOT EXISTS Student(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, year INTEGER NOT NULL)");
-        statement.executeUpdate("CREATE TABLE IF NOT EXISTS Grade(student_id INTEGER, course_id INTEGER, value int NOT NULL, PRIMARY KEY(student_id, course_id), FOREIGN KEY(student_id) REFERENCES Student(id) ON UPDATE CASCADE)");
-        statement.executeUpdate("CREATE TABLE IF NOT EXISTS Course(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, teacher_id INTEGER NOT NULL, FOREIGN KEY(id) REFERENCES Grade(course_id) ON UPDATE CASCADE)");
-        statement.executeUpdate("CREATE TABLE IF NOT EXISTS Teacher(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, FOREIGN KEY(id) REFERENCES Course(teacher_id) ON UPDATE CASCADE)");
+        statement.executeUpdate("CREATE TABLE IF NOT EXISTS Course(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, teacher_id INTEGER NOT NULL, FOREIGN KEY(teacher_id) REFERENCES Teacher(id) ON UPDATE CASCADE)");
+        statement.executeUpdate("CREATE TABLE IF NOT EXISTS Grade(student_id INTEGER, course_id INTEGER, value INTEGER NOT NULL, PRIMARY KEY(student_id, course_id), FOREIGN KEY(student_id) REFERENCES Student(id) ON UPDATE CASCADE, FOREIGN KEY(course_id) REFERENCES Course(id) ON UPDATE CASCADE)");
   	
 	}
 	public void insert(model.FileData m_filedata)throws SQLException {
 		try{
 			connection.setAutoCommit(false);
-			statement.executeUpdate("INSERT INTO Student VALUES(" + m_filedata.getListOfData().get(0).getStudentId() + "," + "'" + m_filedata.getListOfData().get(0).getStudentName() + "'" + "," + m_filedata.getListOfData().get(0).getStudentYear()+ ")");
-			statement.executeUpdate("INSERT INTO Grade VALUES(" + m_filedata.getListOfData().get(0).getStudentId() + "," + m_filedata.getListOfData().get(0).getCourseId() + "," + "'" + m_filedata.getListOfData().get(0).getGrade() + "'" + ")");
+			// with id
+			//statement.executeUpdate("INSERT INTO Student(name, year) VALUES(" + "'" + m_filedata.getListOfData().get(0).getStudentName() + "'" + "," + m_filedata.getListOfData().get(0).getStudentYear()+ ")");
+			/*statement.executeUpdate("INSERT INTO Grade VALUES(" + m_filedata.getListOfData().get(0).getStudentId() + "," + m_filedata.getListOfData().get(0).getCourseId() + "," + "'" + m_filedata.getListOfData().get(0).getGrade() + "'" + ")");
 			statement.executeUpdate("INSERT INTO Course VALUES(" + m_filedata.getListOfData().get(0).getCourseId() + "," + "'" + m_filedata.getListOfData().get(0).getCourseName() + "'" + "," + m_filedata.getListOfData().get(0).getTeacherId()+ ")");
-			statement.executeUpdate("INSERT INTO Teacher VALUES(" + m_filedata.getListOfData().get(0).getTeacherId() + "," + "'" + m_filedata.getListOfData().get(0).getTeacherName() + "'" + ")");
+			statement.executeUpdate("INSERT INTO Teacher VALUES(" + m_filedata.getListOfData().get(0).getTeacherId() + "," + "'" + m_filedata.getListOfData().get(0).getTeacherName() + "'" + ")"); */
+			// without id
+			/*statement.executeUpdate("INSERT INTO Student VALUES(" + m_filedata.getListOfData().get(0).getStudentName() + "'" + "," + m_filedata.getListOfData().get(0).getStudentYear()+ ")");
+			statement.executeUpdate("INSERT INTO Grade VALUES(" +  m_filedata.getListOfData().get(0).getGrade() + "'" + ")");
+			statement.executeUpdate("INSERT INTO Course VALUES(" + m_filedata.getListOfData().get(0).getCourseName() + ")");*/
+			
+			statement.executeUpdate("INSERT INTO Teacher(name)VALUES(" + "'" + m_filedata.getListOfData().get(0).getTeacherName() + "'" + ")");
 			connection.commit();
+			System.out.println("The data was successfully inserted into the database");
 		}catch(Exception e){
 			System.err.println(e);
 			connection.rollback();

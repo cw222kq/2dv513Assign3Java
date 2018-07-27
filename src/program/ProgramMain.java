@@ -20,7 +20,7 @@ public class ProgramMain {
 		view.Console c = new Console();
 		controller.App p = new App();
 		
-		
+	
 	
 		//while(p.runApp(c));
 		p.runApp(c);
