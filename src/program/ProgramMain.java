@@ -23,8 +23,17 @@ public class ProgramMain {
 	
 	
 		//while(p.runApp(c));
+		
+		// körs
 		p.runApp(c);
-
+		
+		
+		
+		// test query
+		/*String theName = "Urban";
+		int theYear = 2008;
+		
+		System.out.println("SELECT id FROM Student WHERE name = '" + theName + "' AND year = " + theYear);*/
 	}
 
 }

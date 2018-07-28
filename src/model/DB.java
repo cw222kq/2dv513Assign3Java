@@ -58,7 +58,10 @@ public class DB {
 			//statement.executeUpdate("INSERT INTO Student(year,name) VALUES(" + m_filedata.getListOfData().get(0).getStudentYear() + "," + "'" + m_filedata.getListOfData().get(0).getStudentName() + "'" + ")");
 			
 			// course
-			statement.executeUpdate("INSERT INTO Course(name, teacher_id) VALUES(" + "'" + m_filedata.getListOfData().get(0).getCourseName() + "'" + ", " + m_filedata.getListOfData().get(0).getTeacherId() + ")" );
+			//statement.executeUpdate("INSERT INTO Course(name, teacher_id) VALUES(" + "'" + m_filedata.getListOfData().get(0).getCourseName() + "'" + ", " + m_filedata.getListOfData().get(0).getTeacherId() + ")" );
+			
+			// grade
+			statement.executeUpdate("INSERT INTO Grade(student_id, course_id, value) VALUES(" + m_filedata.getListOfData().get(0).getStudentId() + ", " + m_filedata.getListOfData().get(0).getCourseId() + ", " + m_filedata.getListOfData().get(0).getGrade() + ")");
 			
 			connection.commit();
 			System.out.println("The data was successfully inserted into the database");
@@ -72,11 +75,15 @@ public class DB {
 	}
 	/* QUERIES WHO FETCH DATA TO SUPPORT THE INSERT METODS*/
 	// course
-	// If the name for student, course or teacher exists in the database, this method returns the id for that name
-	public ResultSet getTablesId (String theName, String theTable)throws SQLException {
+	// If the name for course or teacher exists in the database, this method returns the id for that name
+	public ResultSet getTablesId(String theName, String theTable)throws SQLException {
 	
 		rs = statement.executeQuery("SELECT id FROM " + theTable + " WHERE name = '" + theName + "'");
 		return rs;		
+	}
+	public ResultSet getStudentId(String theName, int theYear)throws SQLException{
+		rs = statement.executeQuery("SELECT id FROM Student WHERE name = '" + theName + "' AND year = " + theYear);
+		return rs;	
 	}
 	/* QUERIES WHO FETCH DATA FROM THE DATABASE FOR THE OUTPUT MENU*/
 	// 1. Get average of grade from the whole school FUNKAR ÄNDRA DESSA LÄGG TILL RS KOLLA PÅ OVANSTÅENDE METOD

@@ -12,10 +12,10 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class Data implements Serializable{
 
-	//private int studentId;
+	private int studentId;
 	private String studentName;
 	private int studentYear;
-	//private int courseId;
+	private int courseId;
 	private int grade;
 	private String courseName;
 	private int teacherId;
@@ -47,18 +47,18 @@ public class Data implements Serializable{
 	public Data(){}
 	
 	// setters
-	/*public void setStudentId(int studentId){
+	public void setStudentId(int studentId){
 		this.studentId = studentId;
-	}*/
+	}
 	public void setStudentName(String studentName){
 		this.studentName = studentName;
 	}
 	public void setStudentYear(int studentYear){
 		this.studentYear = studentYear;
 	}
-	/*public void setCourseId(int courseId){
+	public void setCourseId(int courseId){
 		this.courseId = courseId;
-	}*/
+	}
 	public void setGrade(int grade){
 		this.grade = grade;
 	}
@@ -72,18 +72,18 @@ public class Data implements Serializable{
 		this.teacherName = teacherName;
 	}
 	// getters
-	/*public int getStudentId(){
+	public int getStudentId(){
 		return this.studentId;
-	}*/
+	}
 	public String getStudentName(){
 		return this.studentName;
 	}
 	public int getStudentYear(){
 		return this.studentYear;
 	}
-	/*public int getCourseId(){
+	public int getCourseId(){
 		return this.courseId;
-	}*/
+	}
 	public int getGrade(){
 		return this.grade;
 	}

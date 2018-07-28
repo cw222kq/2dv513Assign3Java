@@ -165,12 +165,56 @@ public class Console {
 			} catch (SQLException e){
 				System.err.println(e.getMessage());
 			}
-			System.out.println("Course: " + m_course.getName() + ", Teacher: " + m_teacher.getName());
+			
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			System.err.println("The selected teacher dosen´t exist in the database. Please insert the teacher first");
 		}
-					
+		System.out.println("Course: " + m_course.getName() + ", Teacher: " + m_teacher.getName());
+						
+	}
+	// Will be executed if the user choose 4 from the insert menu JOBBAR HÄR NU ***!!!!!!!!!!!!!!!!!!!!!!!!!
+	public void printInsertGrade(model.Student m_student, model.Course m_course, model.DB m_db){
+		// to get the student id for the grade table
+		validateInputInteger("Insert year for the student you wish to grade");
+		m_student.setYear(scan.nextInt());
+		validateInputString("Insert name for the student you wish to grade");
+		m_student.setName(scanner.nextLine());
+		try {
+			ResultSet r = m_db.getStudentId(m_student.getName(), m_student.getYear());
+			try {
+				while(r.next()){
+					m_student.setId(r.getInt("id"));
+				}	
+			} catch (SQLException e){
+				System.err.println(e.getMessage());
+			}
+			//System.out.println("Student: " + m_student.getName() + ", Year: " + m_student.getYear());
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			System.err.println("The selected student dosen´t exist in the database. Please insert the student first");
+		}
+		// to get the course id for the grade table
+		validateInputString("Insert which course you want to grade " + m_student.getName() + " in");
+		m_course.setName(scanner.nextLine());
+		try {
+			ResultSet r = m_db.getTablesId(m_course.getName(),"Course");
+			try {
+				while(r.next()){
+					m_course.setId(r.getInt("id"));
+				}	
+			} catch (SQLException e){
+				System.err.println(e.getMessage());
+			}
+			
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			System.err.println("The selected student dosen´t exist in the database. Please insert the student first");
+		}
+		validateInputInteger("Insert " + m_student.getName() + "s grade");
+		m_student.setGrade(scan.nextInt());
+		System.out.println("Year: " + m_student.getYear() + ", Name: " + m_student.getName() + ", Course: " + m_course.getName() + ", Grade: " + m_student.getGrade());
+		
 	}
 	public void setUsersChoice(){
 		inputResult = getInput();

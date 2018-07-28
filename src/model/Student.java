@@ -10,16 +10,16 @@ package model;
 public class Student {
 	
 	// initiates the values
-	//private int id;
+	private int id;
 	private String name;
 	private int year;
 	private int course_id;
 	private int grade;
 	
 	// creates getters for the values
-	/*public int getId(){
+	public int getId(){
 		return this.id;
-	}*/
+	}
 	public String getName(){
 		return this.name;
 	}
@@ -33,9 +33,9 @@ public class Student {
 		return this.grade;
 	}
 	// creates setters for the values
-	/*public void setId(int inID){
+	public void setId(int inID){
 		this.id = inID;
-	}*/
+	}
 	public void setName(String newName){
 		this.name = newName;
 	}

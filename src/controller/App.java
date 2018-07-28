@@ -67,15 +67,19 @@ public class App {
 				inputResult = 0;
 				
 			}
-			// course JOBBA HÄR!!!!!!!!!!!!!!!!!!!!!!!!!
+			// course
 			if(inputResult == '3') {
 				a_view.printInsertCourse(a_course, a_teacher, a_db);
 				a_data.setCourseName(a_course.getName());
 				a_data.setTeacherId(a_teacher.getId());
 				
 			}
-			// grade
+			// grade jobba här
 			if(inputResult == '4') {
+				a_view.printInsertGrade(a_student, a_course, a_db);
+				a_data.setStudentId(a_student.getId());
+				a_data.setCourseId(a_course.getId());
+				a_data.setGrade(a_student.getGrade());
 				
 			}
 			
@@ -93,11 +97,13 @@ public class App {
 			
 			
 			
-			// add the inserted data to the array list in filedata EXEKVERAS EJ ERROR INNAN
+			// add the inserted data to the array list in FileData 
 			System.out.println(a_fileData.getListOfData().add(a_data));
 			//a_fileData.getListOfData().add(a_data);
 			
 			//a_view.printArray(a_fileData, a_fileData.getArray());
+			
+			//System.out.println("Student id: " + a_data.getStudentId() + ", Course id: " + a_data.getCourseId() + ", Grade " + a_data.getGrade());
 			
 			
 			
