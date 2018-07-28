@@ -56,14 +56,22 @@ public class App {
 			if(inputResult == '1'){
 				a_view.printInsertTeacher(a_teacher);
 				a_data.setTeacherName(a_teacher.getName());
+				inputResult = 0;
 				
 			}
 			// student
 			if(inputResult == '2') {
+				a_view.printInsertStudent(a_student);
+				a_data.setStudentYear(a_student.getYear());
+				a_data.setStudentName(a_student.getName());
+				inputResult = 0;
 				
 			}
-			// course
+			// course JOBBA HÄR!!!!!!!!!!!!!!!!!!!!!!!!!
 			if(inputResult == '3') {
+				a_view.printInsertCourse(a_course, a_teacher, a_db);
+				a_data.setCourseName(a_course.getName());
+				a_data.setTeacherId(a_teacher.getId());
 				
 			}
 			// grade
@@ -85,9 +93,11 @@ public class App {
 			
 			
 			
-			// add the inserted data to the array list in filedata
-			a_fileData.getListOfData().add(a_data);
-			a_view.printArray(a_fileData, a_fileData.getArray());
+			// add the inserted data to the array list in filedata EXEKVERAS EJ ERROR INNAN
+			System.out.println(a_fileData.getListOfData().add(a_data));
+			//a_fileData.getListOfData().add(a_data);
+			
+			//a_view.printArray(a_fileData, a_fileData.getArray());
 			
 			
 			
@@ -103,6 +113,8 @@ public class App {
 				
 				a_view.printErrorMessage(e);;
 			}
+			
+			
 			
 			//a_view.printArray(a_fileData, a_fileData.getArray());
 		}

@@ -18,7 +18,7 @@ public class Data implements Serializable{
 	//private int courseId;
 	private int grade;
 	private String courseName;
-	//private int teacherId;
+	private int teacherId;
 	private String teacherName;
 	
 	// with id
@@ -65,9 +65,9 @@ public class Data implements Serializable{
 	public void setCourseName(String courseName){
 		this.courseName = courseName;
 	}
-	/*public void setTeacherId(int teacherId){
+	public void setTeacherId(int teacherId){
 		this.teacherId = teacherId;
-	}*/
+	}
 	public void setTeacherName(String teacherName){
 		this.teacherName = teacherName;
 	}
@@ -90,9 +90,9 @@ public class Data implements Serializable{
 	public String getCourseName(){
 		return this.courseName;
 	}
-	/*public int getTeacherId(){
+	public int getTeacherId(){
 		return this.teacherId;
-	}*/
+	}
 	public String getTeacherName(){
 		return this.teacherName;
 	}

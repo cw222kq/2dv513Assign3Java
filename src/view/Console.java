@@ -69,11 +69,7 @@ public class Console {
 		System.out.println("<1> ABOUT THE TEACHER");
 		System.out.println("<2> ABOUT THE STUDENT");
 		System.out.println("<3> ABOUT THE COURSE");
-		System.out.println("<4> GRADE");
-		
-		
-		//setUsersChoice();
-		
+		System.out.println("<4> ABOUT THE GRADE");
 		
 		
 		//System.out.println("INSERT DATA ABOUT THE STUDENT");
@@ -92,6 +88,8 @@ public class Console {
 		m_student.setGrade(scan.nextInt());
 		System.out.println("INSERT DATA ABOUT THE COURSE");*/
 		
+		
+		// course
 		/*validateInputInteger("Insert course id");
 		m_course.setId(scan.nextInt());*/
 		
@@ -143,6 +141,37 @@ public class Console {
 			    return;
 		}	
 	}
+	// Will be executed if the user choose 2 from the insert menu
+	public void printInsertStudent(model.Student m_student){
+		
+		validateInputInteger("Insert student year");
+		m_student.setYear(scan.nextInt());
+		validateInputString("Insert student name");
+		m_student.setName(scanner.nextLine());
+	    System.out.println("Student year: " + m_student.getYear() + ", Student name: " + m_student.getName());
+	}
+	// Will be executed if the user choose 3 from the insert menu
+	public void printInsertCourse(model.Course m_course, model.Teacher m_teacher, model.DB m_db){
+		validateInputString("Insert course name");
+		m_course.setName(scanner.next());
+		validateInputString("Insert the responsible teacher for the course");
+		m_teacher.setName(scanner.nextLine());
+		try {
+			ResultSet r = m_db.getTablesId(m_teacher.getName(),"Teacher");
+			try {
+				while(r.next()){
+					m_teacher.setId(r.getInt("id"));
+				}	
+			} catch (SQLException e){
+				System.err.println(e.getMessage());
+			}
+			System.out.println("Course: " + m_course.getName() + ", Teacher: " + m_teacher.getName());
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			System.err.println("The selected teacher dosen´t exist in the database. Please insert the teacher first");
+		}
+					
+	}
 	public void setUsersChoice(){
 		inputResult = getInput();
 	}
@@ -159,7 +188,7 @@ public class Console {
 			// student
 			//System.out.println("Student name: " + d.getStudentName() + ", " + "Årskurs: " + d.getStudentYear());
 			//teacher
-			System.out.println("Lärare: "  + d.getTeacherName());
+			//System.out.println("Lärare: "  + d.getTeacherName());
 		}	
 	}
 	public void printErrorMessage(Exception e){

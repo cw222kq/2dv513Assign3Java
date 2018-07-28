@@ -21,7 +21,6 @@ public class Student {
 		return this.id;
 	}*/
 	public String getName(){
-		System.out.println("get metoden i name student körs");
 		return this.name;
 	}
 	public int getYear(){

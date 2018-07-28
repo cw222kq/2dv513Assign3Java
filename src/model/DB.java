@@ -47,11 +47,19 @@ public class DB {
 			statement.executeUpdate("INSERT INTO Course VALUES(" + m_filedata.getListOfData().get(0).getCourseId() + "," + "'" + m_filedata.getListOfData().get(0).getCourseName() + "'" + "," + m_filedata.getListOfData().get(0).getTeacherId()+ ")");
 			statement.executeUpdate("INSERT INTO Teacher VALUES(" + m_filedata.getListOfData().get(0).getTeacherId() + "," + "'" + m_filedata.getListOfData().get(0).getTeacherName() + "'" + ")"); */
 			// without id
-			/*statement.executeUpdate("INSERT INTO Student VALUES(" + m_filedata.getListOfData().get(0).getStudentName() + "'" + "," + m_filedata.getListOfData().get(0).getStudentYear()+ ")");
+			/*
 			statement.executeUpdate("INSERT INTO Grade VALUES(" +  m_filedata.getListOfData().get(0).getGrade() + "'" + ")");
-			statement.executeUpdate("INSERT INTO Course VALUES(" + m_filedata.getListOfData().get(0).getCourseName() + ")");*/
+			*/
 			
-			statement.executeUpdate("INSERT INTO Teacher(name)VALUES(" + "'" + m_filedata.getListOfData().get(0).getTeacherName() + "'" + ")");
+			// teacher
+			//statement.executeUpdate("INSERT INTO Teacher(name)VALUES(" + "'" + m_filedata.getListOfData().get(0).getTeacherName() + "'" + ")");
+			
+			// student
+			//statement.executeUpdate("INSERT INTO Student(year,name) VALUES(" + m_filedata.getListOfData().get(0).getStudentYear() + "," + "'" + m_filedata.getListOfData().get(0).getStudentName() + "'" + ")");
+			
+			// course
+			statement.executeUpdate("INSERT INTO Course(name, teacher_id) VALUES(" + "'" + m_filedata.getListOfData().get(0).getCourseName() + "'" + ", " + m_filedata.getListOfData().get(0).getTeacherId() + ")" );
+			
 			connection.commit();
 			System.out.println("The data was successfully inserted into the database");
 		}catch(Exception e){
@@ -62,7 +70,16 @@ public class DB {
 	public Connection getConn(){
 		return connection;
 	}
-	// 1. Get average of grade from the whole school FUNKAR
+	/* QUERIES WHO FETCH DATA TO SUPPORT THE INSERT METODS*/
+	// course
+	// If the name for student, course or teacher exists in the database, this method returns the id for that name
+	public ResultSet getTablesId (String theName, String theTable)throws SQLException {
+	
+		rs = statement.executeQuery("SELECT id FROM " + theTable + " WHERE name = '" + theName + "'");
+		return rs;		
+	}
+	/* QUERIES WHO FETCH DATA FROM THE DATABASE FOR THE OUTPUT MENU*/
+	// 1. Get average of grade from the whole school FUNKAR ÄNDRA DESSA LÄGG TILL RS KOLLA PÅ OVANSTÅENDE METOD
 	public ResultSet getAvgGradeSchool() throws SQLException {
 		statement.executeUpdate("SELECT AVG(value) FROM Grade");
 		return rs;	
