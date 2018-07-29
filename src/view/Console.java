@@ -133,31 +133,37 @@ public class Console {
 	}
 	// Will be executed if the user choose 1 from the insert menu
 	public void printInsertTeacher(model.Teacher m_teacher){
+		validateInputString("Insert teacher social security number(yyyymmdd-xxxx)");
+		m_teacher.setSSN(scanner.next());
 		validateInputString("Insert teacher name");
-		while (scanner.hasNext()) {
-			    System.out.print(scanner.nextLine());
+		//while (scanner.hasNext()) {
+			    //System.out.print(scanner.nextLine());
 			    m_teacher.setName(scanner.nextLine());
-			    System.out.println("Teacher name: " + m_teacher.getName());
-			    return;
-		}	
+			    System.out.println("Teacher name: " + m_teacher.getName()+ ", Teacher security number: " + m_teacher.getSSN());
+		//	    return;
+	//	}	
 	}
 	// Will be executed if the user choose 2 from the insert menu
-	public void printInsertStudent(model.Student m_student){
+	public void printInsertStudent(model.Student m_student, model.StudentClass m_studentClass){
 		
 		validateInputInteger("Insert student year");
-		m_student.setYear(scan.nextInt());
+		m_studentClass.setYear(scan.nextInt());
+		validateInputString("Insert students social security number(yyyymmdd-xxxx)");
+		m_student.setSSN(scanner.next());
 		validateInputString("Insert student name");
 		m_student.setName(scanner.nextLine());
-	    System.out.println("Student year: " + m_student.getYear() + ", Student name: " + m_student.getName());
+	    System.out.println("Student year: " + m_studentClass.getYear() + ", Student social security number: " + m_student.getSSN()+ ", Student name: " + m_student.getName());
 	}
 	// Will be executed if the user choose 3 from the insert menu
 	public void printInsertCourse(model.Course m_course, model.Teacher m_teacher, model.DB m_db){
 		validateInputString("Insert course name");
 		m_course.setName(scanner.next());
-		validateInputString("Insert the responsible teacher for the course");
-		m_teacher.setName(scanner.nextLine());
+		validateInputString("Insert the social security number(yyyymmdd-xxxx)for the teacher responsible for the course");
+		m_teacher.setSSN(scanner.nextLine());
+		// gets teacher id for the course table
 		try {
-			ResultSet r = m_db.getTablesId(m_teacher.getName(),"Teacher");
+			//ResultSet r = m_db.getTablesId(m_teacher.getName(),"Teacher");
+			ResultSet r = m_db.getStudentOrTeacherId(m_teacher.getSSN(),"Teacher");
 			try {
 				while(r.next()){
 					m_teacher.setId(r.getInt("id"));
@@ -170,18 +176,35 @@ public class Console {
 			System.err.println(e.getMessage());
 			System.err.println("The selected teacher dosen´t exist in the database. Please insert the teacher first");
 		}
-		System.out.println("Course: " + m_course.getName() + ", Teacher: " + m_teacher.getName());
+		// gets the teacher name from the social security number
+		try {
+			//ResultSet r = m_db.getTablesId(m_teacher.getName(),"Teacher");
+			ResultSet r = m_db.getStudentOrTeacherName(m_teacher.getSSN(),"Teacher");
+			try {
+				while(r.next()){
+					m_teacher.setName(r.getString("name"));
+				}	
+			} catch (SQLException e){
+				System.err.println(e.getMessage());
+			}
+			
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			System.err.println("The selected teacher dosen´t exist in the database. Please insert the teacher first");
+		}
+		System.out.println("Course: " + m_course.getName() + ", Teacher security number: " + m_teacher.getSSN() + ", Teacher name: " + m_teacher.getName());
 						
 	}
 	// Will be executed if the user choose 4 from the insert menu JOBBAR HÄR NU ***!!!!!!!!!!!!!!!!!!!!!!!!!
-	public void printInsertGrade(model.Student m_student, model.Course m_course, model.DB m_db){
-		// to get the student id for the grade table
+	public void printInsertGrade(model.Student m_student, model.Course m_course, model.DB m_db, model.StudentClass m_studentClass){
+		// gets the student id for the grade table
 		validateInputInteger("Insert year for the student you wish to grade");
-		m_student.setYear(scan.nextInt());
-		validateInputString("Insert name for the student you wish to grade");
-		m_student.setName(scanner.nextLine());
+		m_studentClass.setYear(scan.nextInt());
+		validateInputString("Insert social security number(yyyymmdd-xxxx) for the student you wish to grade");
+		m_student.setSSN(scanner.nextLine());
 		try {
-			ResultSet r = m_db.getStudentId(m_student.getName(), m_student.getYear());
+			//ResultSet r = m_db.getStudentId(m_student.getName(), m_studentClass.getYear());
+			ResultSet r = m_db.getStudentOrTeacherId(m_student.getSSN(), "Student");
 			try {
 				while(r.next()){
 					m_student.setId(r.getInt("id"));
@@ -194,11 +217,28 @@ public class Console {
 			System.err.println(e.getMessage());
 			System.err.println("The selected student dosen´t exist in the database. Please insert the student first");
 		}
-		// to get the course id for the grade table
+		// gets the name of the student from the student social security number
+		try {
+			//ResultSet r = m_db.getStudentId(m_student.getName(), m_studentClass.getYear());
+			ResultSet r = m_db.getStudentOrTeacherName(m_student.getSSN(), "Student");
+			try {
+				while(r.next()){
+					m_student.setName(r.getString("name"));
+				}	
+			} catch (SQLException e){
+				System.err.println(e.getMessage());
+			}
+			//System.out.println("Student: " + m_student.getName() + ", Year: " + m_student.getYear());
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			System.err.println("The selected student dosen´t exist in the database. Please insert the student first");
+		}
+		
+		// gets the course id for the grade table
 		validateInputString("Insert which course you want to grade " + m_student.getName() + " in");
 		m_course.setName(scanner.nextLine());
 		try {
-			ResultSet r = m_db.getTablesId(m_course.getName(),"Course");
+			ResultSet r = m_db.getCourseId(m_course.getName());
 			try {
 				while(r.next()){
 					m_course.setId(r.getInt("id"));
@@ -213,7 +253,7 @@ public class Console {
 		}
 		validateInputInteger("Insert " + m_student.getName() + "s grade");
 		m_student.setGrade(scan.nextInt());
-		System.out.println("Year: " + m_student.getYear() + ", Name: " + m_student.getName() + ", Course: " + m_course.getName() + ", Grade: " + m_student.getGrade());
+		System.out.println("Year: " + m_studentClass.getYear() + ", Name: " + m_student.getName() + ", Course: " + m_course.getName() + ", Grade: " + m_student.getGrade());
 		
 	}
 	public void setUsersChoice(){

@@ -16,12 +16,14 @@ public class App {
 	}
 	// initiates the values
 	char inputResult;
+	String table;
 	model.Student a_student = new model.Student();
 	model.Course a_course = new model.Course();
 	model.Teacher a_teacher = new model.Teacher();
 	model.Data a_data = new model.Data();
 	model.FileData a_fileData = new model.FileData();
 	model.DB a_db = new model.DB();
+	model.StudentClass a_studentClass = new model.StudentClass();
 	
 	// run app if true, if false stop
 	public boolean runApp(view.Console a_view){
@@ -54,32 +56,40 @@ public class App {
 			
 			// teacher
 			if(inputResult == '1'){
+				table = "teacher";
 				a_view.printInsertTeacher(a_teacher);
 				a_data.setTeacherName(a_teacher.getName());
+				a_data.setTeacherSSN(a_teacher.getSSN());
 				inputResult = 0;
 				
 			}
 			// student
 			if(inputResult == '2') {
-				a_view.printInsertStudent(a_student);
-				a_data.setStudentYear(a_student.getYear());
+				table = "student";
+				a_view.printInsertStudent(a_student, a_studentClass);
+				a_data.setStudentYear(a_studentClass.getYear());
 				a_data.setStudentName(a_student.getName());
+				a_data.setStudentSSN(a_student.getSSN());
 				inputResult = 0;
 				
 			}
 			// course
 			if(inputResult == '3') {
+				table = "course";
 				a_view.printInsertCourse(a_course, a_teacher, a_db);
 				a_data.setCourseName(a_course.getName());
 				a_data.setTeacherId(a_teacher.getId());
+				inputResult = 0;
 				
 			}
-			// grade jobba här
+			// grade
 			if(inputResult == '4') {
-				a_view.printInsertGrade(a_student, a_course, a_db);
+				table = "grade";
+				a_view.printInsertGrade(a_student, a_course, a_db, a_studentClass);
 				a_data.setStudentId(a_student.getId());
 				a_data.setCourseId(a_course.getId());
 				a_data.setGrade(a_student.getGrade());
+				inputResult = 0;
 				
 			}
 			
@@ -98,8 +108,8 @@ public class App {
 			
 			
 			// add the inserted data to the array list in FileData 
-			System.out.println(a_fileData.getListOfData().add(a_data));
-			//a_fileData.getListOfData().add(a_data);
+			//System.out.println(a_fileData.getListOfData().add(a_data)); Framme först kommenterar fram nedan raden istället
+			a_fileData.getListOfData().add(a_data);
 			
 			//a_view.printArray(a_fileData, a_fileData.getArray());
 			
@@ -113,7 +123,7 @@ public class App {
 			// insert the data in the database
 			try {
 				
-				a_db.insert(a_fileData);
+				a_db.insert(a_fileData,table);
 				
 			} catch (SQLException e) {
 				

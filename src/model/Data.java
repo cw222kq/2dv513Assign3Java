@@ -15,11 +15,13 @@ public class Data implements Serializable{
 	private int studentId;
 	private String studentName;
 	private int studentYear;
+	private String studentSSN;
 	private int courseId;
 	private int grade;
 	private String courseName;
 	private int teacherId;
 	private String teacherName;
+	private String teacherSSN;
 	
 	// with id
 	/*public Data(int studentId, String studentName, int studentYear, int courseId, char grade, String courseName, int teacherId, String teacherName) {
@@ -56,6 +58,9 @@ public class Data implements Serializable{
 	public void setStudentYear(int studentYear){
 		this.studentYear = studentYear;
 	}
+	public void setStudentSSN(String studentSSN){
+		this.studentSSN = studentSSN;
+	}
 	public void setCourseId(int courseId){
 		this.courseId = courseId;
 	}
@@ -71,6 +76,9 @@ public class Data implements Serializable{
 	public void setTeacherName(String teacherName){
 		this.teacherName = teacherName;
 	}
+	public void setTeacherSSN(String teacherSSN){
+		this.teacherSSN = teacherSSN;
+	}
 	// getters
 	public int getStudentId(){
 		return this.studentId;
@@ -80,6 +88,9 @@ public class Data implements Serializable{
 	}
 	public int getStudentYear(){
 		return this.studentYear;
+	}
+	public String getStudentSSN(){
+		return this.studentSSN;
 	}
 	public int getCourseId(){
 		return this.courseId;
@@ -95,6 +106,9 @@ public class Data implements Serializable{
 	}
 	public String getTeacherName(){
 		return this.teacherName;
+	}
+	public String getTeacherSSN(){
+		return this.teacherSSN;
 	}
 	/*@Override
 	public String toString(){

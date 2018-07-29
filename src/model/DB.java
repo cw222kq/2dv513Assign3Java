@@ -32,37 +32,31 @@ public class DB {
         statement = connection.createStatement();
         
         // create tables if they not already exists
-        statement.executeUpdate("CREATE TABLE IF NOT EXISTS Teacher(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)");
-        statement.executeUpdate("CREATE TABLE IF NOT EXISTS Student(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, year INTEGER NOT NULL)");
+        statement.executeUpdate("CREATE TABLE IF NOT EXISTS Teacher(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, SSN TEXT NOT NULL)");
+        statement.executeUpdate("CREATE TABLE IF NOT EXISTS Student(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, year INTEGER NOT NULL, SSN TEXT NOT NULL)");
         statement.executeUpdate("CREATE TABLE IF NOT EXISTS Course(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, teacher_id INTEGER NOT NULL, FOREIGN KEY(teacher_id) REFERENCES Teacher(id) ON UPDATE CASCADE)");
         statement.executeUpdate("CREATE TABLE IF NOT EXISTS Grade(student_id INTEGER, course_id INTEGER, value INTEGER NOT NULL, PRIMARY KEY(student_id, course_id), FOREIGN KEY(student_id) REFERENCES Student(id) ON UPDATE CASCADE, FOREIGN KEY(course_id) REFERENCES Course(id) ON UPDATE CASCADE)");
   	
 	}
-	public void insert(model.FileData m_filedata)throws SQLException {
+	public void insert(model.FileData m_filedata,String table)throws SQLException {
 		try{
 			connection.setAutoCommit(false);
-			// with id
-			//statement.executeUpdate("INSERT INTO Student(name, year) VALUES(" + "'" + m_filedata.getListOfData().get(0).getStudentName() + "'" + "," + m_filedata.getListOfData().get(0).getStudentYear()+ ")");
-			/*statement.executeUpdate("INSERT INTO Grade VALUES(" + m_filedata.getListOfData().get(0).getStudentId() + "," + m_filedata.getListOfData().get(0).getCourseId() + "," + "'" + m_filedata.getListOfData().get(0).getGrade() + "'" + ")");
-			statement.executeUpdate("INSERT INTO Course VALUES(" + m_filedata.getListOfData().get(0).getCourseId() + "," + "'" + m_filedata.getListOfData().get(0).getCourseName() + "'" + "," + m_filedata.getListOfData().get(0).getTeacherId()+ ")");
-			statement.executeUpdate("INSERT INTO Teacher VALUES(" + m_filedata.getListOfData().get(0).getTeacherId() + "," + "'" + m_filedata.getListOfData().get(0).getTeacherName() + "'" + ")"); */
-			// without id
-			/*
-			statement.executeUpdate("INSERT INTO Grade VALUES(" +  m_filedata.getListOfData().get(0).getGrade() + "'" + ")");
-			*/
-			
 			// teacher
-			//statement.executeUpdate("INSERT INTO Teacher(name)VALUES(" + "'" + m_filedata.getListOfData().get(0).getTeacherName() + "'" + ")");
-			
+			if(table == "teacher"){
+				statement.executeUpdate("INSERT INTO Teacher(name,SSN)VALUES(" + "'" + m_filedata.getListOfData().get(0).getTeacherName() + "'" +  ", '" + m_filedata.getListOfData().get(0).getTeacherSSN() + "'" + ")");
+			}
 			// student
-			//statement.executeUpdate("INSERT INTO Student(year,name) VALUES(" + m_filedata.getListOfData().get(0).getStudentYear() + "," + "'" + m_filedata.getListOfData().get(0).getStudentName() + "'" + ")");
-			
+			if(table == "student"){
+				statement.executeUpdate("INSERT INTO Student(year,name,SSN) VALUES(" + m_filedata.getListOfData().get(0).getStudentYear() + "," + "'" + m_filedata.getListOfData().get(0).getStudentName() + "'" + ", '" + m_filedata.getListOfData().get(0).getStudentSSN() + "'" +")");
+			}
 			// course
-			//statement.executeUpdate("INSERT INTO Course(name, teacher_id) VALUES(" + "'" + m_filedata.getListOfData().get(0).getCourseName() + "'" + ", " + m_filedata.getListOfData().get(0).getTeacherId() + ")" );
-			
+			if(table == "course"){
+			statement.executeUpdate("INSERT INTO Course(name, teacher_id) VALUES(" + "'" + m_filedata.getListOfData().get(0).getCourseName() + "'" + ", " + m_filedata.getListOfData().get(0).getTeacherId() + ")" );
+			}
 			// grade
+			if(table == "grade"){
 			statement.executeUpdate("INSERT INTO Grade(student_id, course_id, value) VALUES(" + m_filedata.getListOfData().get(0).getStudentId() + ", " + m_filedata.getListOfData().get(0).getCourseId() + ", " + m_filedata.getListOfData().get(0).getGrade() + ")");
-			
+			}
 			connection.commit();
 			System.out.println("The data was successfully inserted into the database");
 		}catch(Exception e){
@@ -74,15 +68,30 @@ public class DB {
 		return connection;
 	}
 	/* QUERIES WHO FETCH DATA TO SUPPORT THE INSERT METODS*/
-	// course
-	// If the name for course or teacher exists in the database, this method returns the id for that name
-	public ResultSet getTablesId(String theName, String theTable)throws SQLException {
+	// If the name for course or teacher exists in the database, this method returns the id for that name DELETE
+	/*public ResultSet getTablesId(String theName, String theTable)throws SQLException {
 	
 		rs = statement.executeQuery("SELECT id FROM " + theTable + " WHERE name = '" + theName + "'");
 		return rs;		
+	}*/
+	// If the social security number for student or teacher exists in the database, this method returns the id for that row
+	public ResultSet getStudentOrTeacherId(String SSN, String theTable)throws SQLException {
+		
+			rs = statement.executeQuery("SELECT id FROM " + theTable + " WHERE SSN = '" + SSN + "'");
+			return rs;		
 	}
-	public ResultSet getStudentId(String theName, int theYear)throws SQLException{
+	/*public ResultSet getStudentId(String theName, int theYear)throws SQLException{
 		rs = statement.executeQuery("SELECT id FROM Student WHERE name = '" + theName + "' AND year = " + theYear);
+		return rs;	
+	}*/
+	// If the course name exits in the database, this method returns the id for that row
+	public ResultSet getCourseId(String theName)throws SQLException{
+		rs = statement.executeQuery("SELECT id FROM Course WHERE name = '" + theName + "'");
+		return rs;	
+	}
+	// If the students or teachers social security number exists in the database, this method returns the name of that person
+	public ResultSet getStudentOrTeacherName(String theSSN, String theTable)throws SQLException{
+		rs = statement.executeQuery("SELECT name FROM " + theTable + " WHERE SSN = '" + theSSN + "'");
 		return rs;	
 	}
 	/* QUERIES WHO FETCH DATA FROM THE DATABASE FOR THE OUTPUT MENU*/
