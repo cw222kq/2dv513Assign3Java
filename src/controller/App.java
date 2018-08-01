@@ -63,13 +63,14 @@ public class App {
 				inputResult = 0;
 				
 			}
-			// student
+			// student and class
 			if(inputResult == '2') {
-				table = "student";
-				a_view.printInsertStudent(a_student, a_studentClass);
-				a_data.setStudentYear(a_studentClass.getYear());
+				table = "studentAndClass";
+				a_view.printInsertStudent(a_student, a_studentClass, a_db);
+				a_data.setStudentClassYear(a_studentClass.getYear());
 				a_data.setStudentName(a_student.getName());
 				a_data.setStudentSSN(a_student.getSSN());
+				a_data.setStudentId(a_student.getId());
 				inputResult = 0;
 				
 			}
@@ -92,34 +93,8 @@ public class App {
 				inputResult = 0;
 				
 			}
-			
-			// transfer the data to the Data class
-			//a_data.setStudentId(a_student.getId());
-			//a_data.setCourseId(a_course.getId());
-			//a_data.setTeacherId(a_teacher.getId());
-			
-			// teacher
-			//a_data.setTeacherName(a_teacher.getName());
-			
-			// student
-			//a_data.setStudentName(a_student.getName());
-			//a_data.setStudentYear(a_student.getYear());
-			
-			
-			
-			// add the inserted data to the array list in FileData 
-			//System.out.println(a_fileData.getListOfData().add(a_data)); Framme först kommenterar fram nedan raden istället
 			a_fileData.getListOfData().add(a_data);
-			
-			//a_view.printArray(a_fileData, a_fileData.getArray());
-			
-			//System.out.println("Student id: " + a_data.getStudentId() + ", Course id: " + a_data.getCourseId() + ", Grade " + a_data.getGrade());
-			
-			
-			
-			/*a_data.setGrade(a_student.getGrade());
-			a_data.setCourseName(a_course.getName());*/
-			
+				
 			// insert the data in the database
 			try {
 				
@@ -130,17 +105,46 @@ public class App {
 				a_view.printErrorMessage(e);;
 			}
 			
-			
-			
-			//a_view.printArray(a_fileData, a_fileData.getArray());
 		}
 		// 2 = Output data
 		if(inputResult == '2') {
+			inputResult = 0;
 			a_view.printOutputDataMenu();
+			// getting the input from the user
+			a_view.setUsersChoice();
+			inputResult = a_view.getUsersChoice();
+			// if user select 1 from the Output data menu
+			if(inputResult == '1') {
+				inputResult = 0;
+				a_view.printResultFromAvgGradeSchool(a_db);
+			}
+			// if user select 2 from the Output data menu 
+			if(inputResult == '2') {
+				inputResult = 0;
+				a_view.printResultFromAvgGradeCourse(a_db);
+			}
+			// if user select 3 from the Output data menu
+			if(inputResult == '3') {
+				inputResult = 0;
+				a_view.printResultFromAvgGradeStudent(a_db);
+				
+			}
+			// if user select 4 from the Output data menu JOBBA HÄR!!!
+			if(inputResult == '4') {
+				inputResult = 0;
+				a_view.printResultFromHighestGradedCoursesForStudent(a_db);
+			}
+			// if user select 5 from the Output data menu
+			if(inputResult == '5') {
+				inputResult = 0;
+				a_view.printResultFromCoursesForStudent(a_db);
+			}
+			
 		}
 		// Q = quit
 		if(inputResult == 'Q') {
 			a_view.quit();
+			return false;
 		}
 			
 		return true;

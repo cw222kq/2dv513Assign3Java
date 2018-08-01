@@ -5,6 +5,7 @@ package view;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.Scanner;
 
 /**
@@ -19,14 +20,9 @@ public class Console {
 	protected char inputResult;
 	protected boolean valid = false;
 	char inChar;
+	ResultSet r;
+	DecimalFormat df = new DecimalFormat("#.#");
 	
-
-	/**
-	 * 
-	 */
-	public Console() {
-		
-	}
 	// Will be executed first
 	public void printStartMenu(){
 		if(start){
@@ -37,10 +33,7 @@ public class Console {
 			System.out.println("<Q> Quit");
 			start = false;
 		}
-		//setUsersChoice();
-		
-		
-		
+			
 	}
 	// Get the input value from the keyboard. Written with inspiration from: https://stackoverflow.com/questions/15446689/what-is-the-use-of-system-in-read
 	protected char getInput() {
@@ -71,46 +64,6 @@ public class Console {
 		System.out.println("<3> ABOUT THE COURSE");
 		System.out.println("<4> ABOUT THE GRADE");
 		
-		
-		//System.out.println("INSERT DATA ABOUT THE STUDENT");
-		/*validateInputInteger("Insert student id");
-		m_student.setId(scan.nextInt());*/ 
-		
-		// student
-		/*validateInputInteger("Insert student year");
-		m_student.setYear(scan.nextInt());
-		System.out.println(m_student.getYear());
-		validateInputString("Insert student name");
-		m_student.setName(scanner.nextLine());	*/
-		
-		
-		/*validateInputInteger("Insert student grade");
-		m_student.setGrade(scan.nextInt());
-		System.out.println("INSERT DATA ABOUT THE COURSE");*/
-		
-		
-		// course
-		/*validateInputInteger("Insert course id");
-		m_course.setId(scan.nextInt());*/
-		
-		/*validateInputString("Insert course name");
-		m_course.setName(scanner.nextLine());
-		System.out.println("INSERT DATA ABOUT THE TEACHER");*/
-		
-		/*validateInputInteger("Insert teacher id");
-		m_teacher.setId(scan.nextInt());*/
-		
-		
-		// teacher FUNKAR ÄNTLIGEN!!!
-		/*validateInputString("Insert teacher name");
-		while (scanner.hasNext()) {
-			    System.out.print(scanner.nextLine());
-			    m_teacher.setName(scanner.nextLine());
-			    System.out.println("Teacher name: " + m_teacher.getName());
-			    return;
-		}*/
-			
-		
 	}
 	// Will be executed if the user choose 2 from the start menu
 	public void printOutputDataMenu(){
@@ -120,7 +73,7 @@ public class Console {
 		System.out.println("<1> GET AVERAGE OF GRADE FROM THE WHOLE SCHOOL");
 		System.out.println("<2> GET AVERAGE OF GRADE FROM A SPECIFIC COURSE");
 		System.out.println("<3> GET AVERAGE OF GRADE ON A SPECIFIC STUDENT");
-		System.out.println("<4> IN WHICH COURSES DOES A SPECIFIC STUDENT PERFORMS BEST (i.e is an A- student)");
+		System.out.println("<4> IN WHICH COURSES DOES A SPECIFIC STUDENT PERFORMS BEST (i.e have the highest grade, is a 5- student)");
 		System.out.println("<5> GET ALL THE GRADES IN ALL THE COURSES FOR A SPECIFIC STUDENT");
 		
 			
@@ -136,22 +89,40 @@ public class Console {
 		validateInputString("Insert teacher social security number(yyyymmdd-xxxx)");
 		m_teacher.setSSN(scanner.next());
 		validateInputString("Insert teacher name");
-		//while (scanner.hasNext()) {
-			    //System.out.print(scanner.nextLine());
-			    m_teacher.setName(scanner.nextLine());
-			    System.out.println("Teacher name: " + m_teacher.getName()+ ", Teacher security number: " + m_teacher.getSSN());
-		//	    return;
-	//	}	
+		m_teacher.setName(scanner.nextLine());
+		System.out.println("Teacher name: " + m_teacher.getName()+ ", Teacher security number: " + m_teacher.getSSN());
+
 	}
 	// Will be executed if the user choose 2 from the insert menu
-	public void printInsertStudent(model.Student m_student, model.StudentClass m_studentClass){
-		
+	public void printInsertStudent(model.Student m_student, model.StudentClass m_studentClass, model.DB m_db){
 		validateInputInteger("Insert student year");
 		m_studentClass.setYear(scan.nextInt());
 		validateInputString("Insert students social security number(yyyymmdd-xxxx)");
 		m_student.setSSN(scanner.next());
 		validateInputString("Insert student name");
 		m_student.setName(scanner.nextLine());
+		// Gets the student_id for this student
+		try {
+			r = m_db.getInsertIdFromStudent();
+			try {
+				while(r.next()){
+					// Gets the current length of student
+					int idCount = r.getInt("presentId"); 
+					System.out.println("innan adderingen i while loopen: " + idCount);
+					// Adding one to get the new id
+					idCount++;
+					System.out.println("Efter adderingen: " + idCount);
+					// Sets the value 
+					m_student.setId(idCount);	
+				}	
+			} catch (SQLException e){
+				System.err.println(e.getMessage());
+			}
+			
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			System.err.println("The selected teacher dosen´t exist in the database. Please insert the teacher first");
+		}
 	    System.out.println("Student year: " + m_studentClass.getYear() + ", Student social security number: " + m_student.getSSN()+ ", Student name: " + m_student.getName());
 	}
 	// Will be executed if the user choose 3 from the insert menu
@@ -162,8 +133,7 @@ public class Console {
 		m_teacher.setSSN(scanner.nextLine());
 		// gets teacher id for the course table
 		try {
-			//ResultSet r = m_db.getTablesId(m_teacher.getName(),"Teacher");
-			ResultSet r = m_db.getStudentOrTeacherId(m_teacher.getSSN(),"Teacher");
+			r = m_db.getStudentOrTeacherId(m_teacher.getSSN(),"Teacher");
 			try {
 				while(r.next()){
 					m_teacher.setId(r.getInt("id"));
@@ -178,8 +148,7 @@ public class Console {
 		}
 		// gets the teacher name from the social security number
 		try {
-			//ResultSet r = m_db.getTablesId(m_teacher.getName(),"Teacher");
-			ResultSet r = m_db.getStudentOrTeacherName(m_teacher.getSSN(),"Teacher");
+			r = m_db.getStudentOrTeacherName(m_teacher.getSSN(),"Teacher");
 			try {
 				while(r.next()){
 					m_teacher.setName(r.getString("name"));
@@ -203,8 +172,7 @@ public class Console {
 		validateInputString("Insert social security number(yyyymmdd-xxxx) for the student you wish to grade");
 		m_student.setSSN(scanner.nextLine());
 		try {
-			//ResultSet r = m_db.getStudentId(m_student.getName(), m_studentClass.getYear());
-			ResultSet r = m_db.getStudentOrTeacherId(m_student.getSSN(), "Student");
+			r = m_db.getStudentOrTeacherId(m_student.getSSN(), "Student");
 			try {
 				while(r.next()){
 					m_student.setId(r.getInt("id"));
@@ -212,15 +180,13 @@ public class Console {
 			} catch (SQLException e){
 				System.err.println(e.getMessage());
 			}
-			//System.out.println("Student: " + m_student.getName() + ", Year: " + m_student.getYear());
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			System.err.println("The selected student dosen´t exist in the database. Please insert the student first");
 		}
 		// gets the name of the student from the student social security number
 		try {
-			//ResultSet r = m_db.getStudentId(m_student.getName(), m_studentClass.getYear());
-			ResultSet r = m_db.getStudentOrTeacherName(m_student.getSSN(), "Student");
+			r = m_db.getStudentOrTeacherName(m_student.getSSN(), "Student");
 			try {
 				while(r.next()){
 					m_student.setName(r.getString("name"));
@@ -228,17 +194,15 @@ public class Console {
 			} catch (SQLException e){
 				System.err.println(e.getMessage());
 			}
-			//System.out.println("Student: " + m_student.getName() + ", Year: " + m_student.getYear());
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			System.err.println("The selected student dosen´t exist in the database. Please insert the student first");
 		}
-		
 		// gets the course id for the grade table
-		validateInputString("Insert which course you want to grade " + m_student.getName() + " in");
+		validateInputString("Insert the name of the course which you want to grade " + m_student.getName() + " in");
 		m_course.setName(scanner.nextLine());
 		try {
-			ResultSet r = m_db.getCourseId(m_course.getName());
+			r = m_db.getCourseId(m_course.getName());
 			try {
 				while(r.next()){
 					m_course.setId(r.getInt("id"));
@@ -253,8 +217,7 @@ public class Console {
 		}
 		validateInputInteger("Insert " + m_student.getName() + "s grade");
 		m_student.setGrade(scan.nextInt());
-		System.out.println("Year: " + m_studentClass.getYear() + ", Name: " + m_student.getName() + ", Course: " + m_course.getName() + ", Grade: " + m_student.getGrade());
-		
+		System.out.println("Year: " + m_studentClass.getYear() + ", Name: " + m_student.getName() + ", Course: " + m_course.getName() + ", Grade: " + m_student.getGrade());	
 	}
 	public void setUsersChoice(){
 		inputResult = getInput();
@@ -262,21 +225,8 @@ public class Console {
 	public char getUsersChoice(){
 		return this.inputResult;
 	}
-	public void printArray(model.FileData a_fileData, Iterable<model.Data> a_data){
-		for(model.Data d: a_data){
-			// with id
-			//System.out.println("Student id: " + d.getStudentId() + ", " + "Student name: " + d.getStudentName()+ ", " + "Årskurs: " + d.getStudentYear() + ", " + "Kursid: " + d.getCourseId() + ", " + "Betyg: " + d.getGrade() + ", " + "Kursnamn: " + d.getCourseName() + ", " + "Lärarid: " + d.getTeacherId() + ", " + "Lärare: "  + d.getTeacherName());
-			// without id
-			//System.out.println("Student name: " + d.getStudentName() + ", " + "Årskurs: " + d.getStudentYear() + ", " + "Betyg: " + d.getGrade() + ", " + "Kursnamn: " + d.getCourseName() + ", " + "Lärare: "  + d.getTeacherName());
-			
-			// student
-			//System.out.println("Student name: " + d.getStudentName() + ", " + "Årskurs: " + d.getStudentYear());
-			//teacher
-			//System.out.println("Lärare: "  + d.getTeacherName());
-		}	
-	}
 	public void printErrorMessage(Exception e){
-		System.err.println(e);
+		System.err.println(e.getMessage());
 	}
 	// validate the input value and checks that it is not an integer
 	protected void validateInputString(String inputMessage){
@@ -289,8 +239,7 @@ public class Console {
 			}
 			else {
 				System.err.println("The input value have to be a STRING. Try again!");
-			}
-			
+			}		
 		}
 	}
 	// validate the input value and checks that it is an integer
@@ -305,63 +254,105 @@ public class Console {
 			else {
 				System.err.println("The input value have to be a NUMBER. Try again!");
 			}
-			
-		
 		}
 	}
 	// print out successful message about inserting the data in the database
 	public void printSuccessfullyMessage(){
 		System.out.println("The data was successfully inserted into the database");
 	}
-	// print out results from queries
-	public void printResultFromAvgGradeSchool(ResultSet r) {
+	// PRINT OUT RESULT FROM QUERIES
+	// If user choose 1 from output data menu
+	public void printResultFromAvgGradeSchool(model.DB m_db) {	
 		try {
+			r = m_db.getAvgGradeSchool();
 			while(r.next()){
-				System.out.println("Average grade set by school is: " + r.getInt("value"));
+				System.out.println("Average grade set by school is: " + df.format(r.getDouble("AVGvalue")));
 			}	
 		} catch (SQLException e){
 			System.err.println(e.getMessage());
-		}
-		
+		}		
 	}
-	public void printResultFromAvgGradeCourse (ResultSet r, String theCourse){
+	// If user choose 2 from output data menu
+	public void printResultFromAvgGradeCourse(model.DB m_db){
+		String theCourse;
+		validateInputString("Insert the course name that you want the average grade of");
+		theCourse = scanner.next();
 		try {
+			r = m_db.getAvgGradeCourse(theCourse);
 			while(r.next()){
-				System.out.println("Average grade in the course, " + theCourse +"," + " is: " + r.getInt("value"));
-			}	
-		} catch (SQLException e){
-			System.err.println(e.getMessage());
-		}
-	}
-	public void printResultFromAvgGradeStudent (ResultSet r, String theStudent){
-		try {
-			while(r.next()){
-				System.out.println("Average grade for the student, " + theStudent +"," + " is: " + r.getInt("value"));
-			}	
-		} catch (SQLException e){
-			System.err.println(e.getMessage());
-		}
-	}
-	public void printResultFromAGradedCoursesForStudent (ResultSet r, String theStudent){
-		try {
-			while(r.next()){
-				System.out.println("Courses where the student, " + theStudent +"," + " is graded with A is: " + r.getString("name"));
+				System.out.println("The average grade in the course, " + theCourse +"," + " is: " + df.format(r.getDouble("AVGvalue")));
 			}	
 		} catch (SQLException e){
 			System.err.println(e.getMessage());
 		}
 	}
-	public void printResultFromCoursesForStudent (ResultSet r, String theStudent){
+	// If user choose 3 from output data menu
+	public void printResultFromAvgGradeStudent (model.DB m_db){
+		validateInputString("Insert the social security number(yyyymmdd-xxxx) of the student you want the average grade of");
+		String theStudentSSN = scanner.next();
+		String theStudent = "";
+		// gets the student name from the social security number
+		try {
+			r = m_db.getStudentOrTeacherName(theStudentSSN,"Student");
+			theStudent = r.getString("name");
+		} catch (SQLException e1) {
+			System.out.println(e1.getMessage());
+		}
+		try {
+			r = m_db.getAvgGradeStudent(theStudent);
+		} catch (SQLException e1) {
+			System.out.println(e1.getMessage());
+		}
 		try {
 			while(r.next()){
-				System.out.println("Results for the student, " + theStudent +":");
-				System.out.println("Course: " + r.getString("name") + "\t" + r.getInt("value"));
+				System.out.println("The average grade for the student, " + theStudent + "," + " is: " + df.format(r.getDouble("AVGvalue")));
 			}	
 		} catch (SQLException e){
 			System.err.println(e.getMessage());
 		}
 	}
-	
-		
+	// If user choose 4 from output data menu
+	public void printResultFromHighestGradedCoursesForStudent (model.DB m_db){
+		validateInputString("Insert the social security number(yyyymmdd-xxxx) of the student you want to get the courses with the highest grade from");
+		String theStudentSSN = scanner.next();
+		String theStudent = "";
+		// gets the student name from the social security number
+		try {
+			r = m_db.getStudentOrTeacherName(theStudentSSN,"Student");
+			theStudent = r.getString("name");
+		} catch (SQLException e1) {
+			System.out.println(e1.getMessage());
+		}
+		try {
+			r = m_db.getAGradedCoursesForStudent(theStudent);
+			while(r.next()){
+				System.out.println("Course/courses where the student, " + theStudent +"," + " is graded with the highest grade is/are: " + r.getString("name"));
+			}	
+		} catch (SQLException e){
+			System.err.println(e.getMessage());
+		}
+	}
+	// If user choose 5 from output data menu
+	public void printResultFromCoursesForStudent(model.DB m_db){
+		validateInputString("Insert the social security number(yyyymmdd-xxxx) of the student you want to get all the grades from");
+		String theStudentSSN = scanner.next();
+		String theStudent = "";
+		// gets the student name from the social security number
+		try {
+			r = m_db.getStudentOrTeacherName(theStudentSSN,"Student");
+			theStudent = r.getString("name");
+		} catch (SQLException e1) {
+			System.out.println(e1.getMessage());
+		}
+		try {
+			r = m_db.getAllGradesForStudent(theStudent);
+			System.out.println("Results for the student, " + theStudent +":");
+			while(r.next()){
+				System.out.println("Course: " + r.getString("name") + ", Grade: " + r.getInt("value"));
+			}	
+		} catch (SQLException e){
+			System.err.println(e.getMessage());
+		}
+	}
 	
 }

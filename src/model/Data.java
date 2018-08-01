@@ -12,9 +12,9 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class Data implements Serializable{
 
+	private int studentClassYear;
 	private int studentId;
 	private String studentName;
-	private int studentYear;
 	private String studentSSN;
 	private int courseId;
 	private int grade;
@@ -22,41 +22,16 @@ public class Data implements Serializable{
 	private int teacherId;
 	private String teacherName;
 	private String teacherSSN;
-	
-	// with id
-	/*public Data(int studentId, String studentName, int studentYear, int courseId, char grade, String courseName, int teacherId, String teacherName) {
 		
-		this.studentId = studentId;
-		this.studentName = studentName;
-		this.studentYear = studentYear;
-		this.courseId = courseId;
-		this.grade = grade;
-		this.courseName = courseName;
-		this.teacherId = teacherId;
-		this.teacherName = teacherName;
-		
-	}*/
-	// without id
-	public Data(String studentName, int studentYear, int grade, String courseName, String teacherName) {
-		
-		this.studentName = studentName;
-		this.studentYear = studentYear;
-		this.grade = grade;
-		this.courseName = courseName;
-		this.teacherName = teacherName;
-		
-	}
-	public Data(){}
-	
 	// setters
+	public void setStudentClassYear(int studentClassYear){
+		this.studentClassYear = studentClassYear;
+	}
 	public void setStudentId(int studentId){
 		this.studentId = studentId;
 	}
 	public void setStudentName(String studentName){
 		this.studentName = studentName;
-	}
-	public void setStudentYear(int studentYear){
-		this.studentYear = studentYear;
 	}
 	public void setStudentSSN(String studentSSN){
 		this.studentSSN = studentSSN;
@@ -80,14 +55,14 @@ public class Data implements Serializable{
 		this.teacherSSN = teacherSSN;
 	}
 	// getters
+	public int getStudentClassYear(){
+		return this.studentClassYear;
+	}
 	public int getStudentId(){
 		return this.studentId;
 	}
 	public String getStudentName(){
 		return this.studentName;
-	}
-	public int getStudentYear(){
-		return this.studentYear;
 	}
 	public String getStudentSSN(){
 		return this.studentSSN;
