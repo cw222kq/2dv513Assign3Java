@@ -27,12 +27,12 @@ public class Console {
 	public void printStartMenu(){
 		if(start){
 			System.out.println("Welcome to Grade statistics!!!"); 
-			System.out.println("Please make your selection");
-			System.out.println("<1> INSERT DATA");
-			System.out.println("<2> OUTPUT DATA");
-			System.out.println("<Q> Quit");
 			start = false;
 		}
+		System.out.println("Please make your selection");
+		System.out.println("<1> INSERT DATA");
+		System.out.println("<2> OUTPUT DATA");
+		System.out.println("<Q> Quit");
 			
 	}
 	// Get the input value from the keyboard. Written with inspiration from: https://stackoverflow.com/questions/15446689/what-is-the-use-of-system-in-read
@@ -41,7 +41,8 @@ public class Console {
 	      inChar = Character.toUpperCase((char)System.in.read());
 	      // don´t return value if value is enter or line feed
 	      while (inChar == '\r' || inChar =='\n') {
-		        inChar = (char)System.in.read();
+		        //inChar = (char)System.in.read();
+	    	  inChar = Character.toUpperCase((char)System.in.read());
 		  }
 	      System.out.print("You entered ");
 	      System.out.println(inChar);
@@ -79,10 +80,15 @@ public class Console {
 			
 	}
 	// Will be executed if the user choose Q from the start menu
-	public void quit(){
+	public void quit(model.DB m_db){
 		System.out.println("Q. Quit");
 		System.exit(0);
-		
+		try {
+			m_db.connection.close();
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+		}
+		//return true;
 	}
 	// Will be executed if the user choose 1 from the insert menu
 	public void printInsertTeacher(model.Teacher m_teacher){

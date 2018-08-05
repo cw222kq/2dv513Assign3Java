@@ -21,19 +21,16 @@ public class ProgramMain {
 		controller.App p = new App();
 		
 	
-	
+		// while app is true run the program
 		//while(p.runApp(c));
+		while(p.run){
+			p.runApp(c);
+		}
 		
 		// körs
-		p.runApp(c);
+		//p.runApp(c);
 		
-		
-		
-		// test query
-		/*String theName = "Urban";
-		int theYear = 2008;
-		
-		System.out.println("SELECT id FROM Student WHERE name = '" + theName + "' AND year = " + theYear);*/
+
 	}
 
 }

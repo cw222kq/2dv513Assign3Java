@@ -15,7 +15,7 @@ import java.sql.Statement;
  */
 public class DB {
 	
-	Connection connection;
+	public Connection connection;
 	Statement statement;
 	ResultSet rs;
 	
@@ -26,17 +26,19 @@ public class DB {
 	}
 	public void connect() throws SQLException, ClassNotFoundException {
 	
+		
 		Class.forName("org.sqlite.JDBC");
 		
 		connection = DriverManager.getConnection("jdbc:sqlite:database/school.db");
-        statement = connection.createStatement();
-        
-        // create tables if they not already exists
-        statement.executeUpdate("CREATE TABLE IF NOT EXISTS Teacher(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, SSN TEXT NOT NULL)");
-        statement.executeUpdate("CREATE TABLE IF NOT EXISTS Student(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, SSN TEXT NOT NULL)");
-        statement.executeUpdate("CREATE TABLE IF NOT EXISTS Course(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, teacher_id INTEGER NOT NULL, FOREIGN KEY(teacher_id) REFERENCES Teacher(id) ON UPDATE CASCADE)");
-        statement.executeUpdate("CREATE TABLE IF NOT EXISTS Grade(student_id INTEGER, course_id INTEGER, value INTEGER NOT NULL, PRIMARY KEY(student_id, course_id), FOREIGN KEY(student_id) REFERENCES Student(id) ON UPDATE CASCADE, FOREIGN KEY(course_id) REFERENCES Course(id) ON UPDATE CASCADE)");
-        statement.executeUpdate("CREATE TABLE IF NOT EXISTS Class(id INTEGER PRIMARY KEY AUTOINCREMENT, year INTEGER NOT NULL, student_id INTEGER, FOREIGN KEY(student_id) REFERENCES Student(id) ON UPDATE CASCADE)");
+		statement = connection.createStatement();
+		
+		// create tables if they not already exists
+		statement.executeUpdate("CREATE TABLE IF NOT EXISTS Teacher(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, SSN TEXT NOT NULL)");
+		statement.executeUpdate("CREATE TABLE IF NOT EXISTS Student(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, SSN TEXT NOT NULL)");
+		statement.executeUpdate("CREATE TABLE IF NOT EXISTS Course(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, teacher_id INTEGER NOT NULL, FOREIGN KEY(teacher_id) REFERENCES Teacher(id) ON UPDATE CASCADE)");
+		statement.executeUpdate("CREATE TABLE IF NOT EXISTS Grade(student_id INTEGER, course_id INTEGER, value INTEGER NOT NULL, PRIMARY KEY(student_id, course_id), FOREIGN KEY(student_id) REFERENCES Student(id) ON UPDATE CASCADE, FOREIGN KEY(course_id) REFERENCES Course(id) ON UPDATE CASCADE)");
+		statement.executeUpdate("CREATE TABLE IF NOT EXISTS Class(id INTEGER PRIMARY KEY AUTOINCREMENT, year INTEGER NOT NULL, student_id INTEGER, FOREIGN KEY(student_id) REFERENCES Student(id) ON UPDATE CASCADE)");
+		
 	}
 	public void insert(model.FileData m_filedata,String table)throws SQLException {
 		try{
@@ -62,9 +64,9 @@ public class DB {
 				statement.executeUpdate("INSERT INTO Class(year, student_id) VALUES(" + m_filedata.getListOfData().get(0).getStudentClassYear() + ", " + m_filedata.getListOfData().get(0).getStudentId() + ")");
 			}
 			connection.commit();
-			System.out.println("The data was successfully inserted into the database");
 		}catch(Exception e){
-			System.err.println(e);
+			System.err.println("An error occurred. The data was not saved properly. Please try again!!!");
+			System.err.println(e.getMessage());
 			connection.rollback();
 		}
 	}

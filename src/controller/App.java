@@ -11,12 +11,11 @@ import java.sql.SQLException;
  */
 public class App {
 	
-	public App() {
-		
-	}
 	// initiates the values
 	char inputResult;
+	public boolean run = true;
 	String table;
+	//view.Console a_view = new view.Console();
 	model.Student a_student = new model.Student();
 	model.Course a_course = new model.Course();
 	model.Teacher a_teacher = new model.Teacher();
@@ -28,7 +27,10 @@ public class App {
 	// run app if true, if false stop
 	public boolean runApp(view.Console a_view){
 		
-		// connect to the db
+		System.out.println("Börjar metoden runApp");
+		
+		// connect to the db if the connection is null
+		
 		try {
 			a_db.connect();
 		} catch (SQLException e) {
@@ -37,12 +39,24 @@ public class App {
 			a_view.printErrorMessage(ex);
 		}
 		
-		// present the start menu to the user
+		System.out.println("efter connect");
+
+		// present the start menu to the user. HOPPAR ÖVER DENNA DEN ANDRA GÅNGEN.VARFÖR?
+		
 		a_view.printStartMenu();
+		
+		System.out.println("Efter startmenu");
 		
 		// getting the input from the user
 		a_view.setUsersChoice();
 		inputResult = a_view.getUsersChoice();
+		
+		// Q = quit
+		if(inputResult == 'Q') {
+			a_view.quit(a_db);
+			//return false;
+			run = false;
+		}
 		
 		// 1 = Insert data 
 		if(inputResult == '1') {
@@ -101,7 +115,7 @@ public class App {
 				a_db.insert(a_fileData,table);
 				
 			} catch (SQLException e) {
-				
+				System.out.println("Inside app.java running the insert method from db ending up in the catch");
 				a_view.printErrorMessage(e);;
 			}
 			
@@ -141,14 +155,8 @@ public class App {
 			}
 			
 		}
-		// Q = quit
-		if(inputResult == 'Q') {
-			a_view.quit();
-			return false;
-		}
-			
-		return true;
-		
+					
+		return run;	
 	}
 
 	
