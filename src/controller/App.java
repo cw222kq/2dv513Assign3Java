@@ -30,7 +30,6 @@ public class App {
 		System.out.println("Börjar metoden runApp");
 		
 		// connect to the db if the connection is null
-		
 		try {
 			a_db.connect();
 		} catch (SQLException e) {
@@ -40,9 +39,7 @@ public class App {
 		}
 		
 		System.out.println("efter connect");
-
-		// present the start menu to the user. HOPPAR ÖVER DENNA DEN ANDRA GÅNGEN.VARFÖR?
-		
+	
 		a_view.printStartMenu();
 		
 		System.out.println("Efter startmenu");
@@ -69,10 +66,12 @@ public class App {
 			inputResult = a_view.getUsersChoice();
 			
 			// teacher
-			if(inputResult == '1'){
+			if(inputResult == '1'){ // FORTS HÄR!!!!!!!!
 				table = "teacher";
-				a_view.printInsertTeacher(a_teacher);
-				a_data.setTeacherName(a_teacher.getName());
+				//while(a_teacher.getSSN().length() == 13 && a_teacher.getSSN().charAt(8) == '-' ){
+					a_view.printInsertTeacher(a_teacher, a_db);
+					a_data.setTeacherName(a_teacher.getName());
+				//}
 				a_data.setTeacherSSN(a_teacher.getSSN());
 				inputResult = 0;
 				

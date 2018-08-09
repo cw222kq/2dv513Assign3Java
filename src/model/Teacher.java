@@ -41,10 +41,15 @@ public class Teacher {
 			this.id = newId;
 		}
 		public void setName(String newName){
+			System.out.println("INNÅT I SET NAME I TEACHERKLASSEN. NAMNET SÄTTS TILL: " + newName);
 			this.name = newName;
 		}
 		public void setSSN(String newSSN){
-			this.SSN = newSSN;
+		//	if(newSSN.length() == 13 && newSSN.charAt(8) == '-'){
+		//		System.out.println("Personnret består av 13 tecken och har ett bindestreck i mitten. BRA!!!");
+				this.SSN = newSSN;
+		//	}
+			
 		}
 
 }

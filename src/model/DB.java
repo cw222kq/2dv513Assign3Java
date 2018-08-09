@@ -18,6 +18,7 @@ public class DB {
 	public Connection connection;
 	Statement statement;
 	ResultSet rs;
+	boolean isInTheDB = true;
 	
 	public DB() {
 		
@@ -45,90 +46,240 @@ public class DB {
 			connection.setAutoCommit(false);
 			// teacher
 			if(table == "teacher"){
+				if(isInTheDB) {return;}
+				if(m_filedata.getListOfData().get(0).getTeacherName() == null){return;}
+				System.out.println("innan statment uppdate");
 				statement.executeUpdate("INSERT INTO Teacher(name,SSN)VALUES(" + "'" + m_filedata.getListOfData().get(0).getTeacherName() + "'" +  ", '" + m_filedata.getListOfData().get(0).getTeacherSSN() + "'" + ")");
+				System.out.println("INSERT INTO Teacher(name,SSN)VALUES(" + "'" + m_filedata.getListOfData().get(0).getTeacherName() + "'" +  ", '" + m_filedata.getListOfData().get(0).getTeacherSSN() + "'" + ")");
+				System.out.println("Efter executeUpdate");
 			}
 			// student
 			if(table == "studentAndClass"){
+				if(isInTheDB) {return;}
+				if(m_filedata.getListOfData().get(0).getStudentName() == null){return;}
 				statement.executeUpdate("INSERT INTO Student(name,SSN) VALUES(" + "'" + m_filedata.getListOfData().get(0).getStudentName() + "'" + ", '" + m_filedata.getListOfData().get(0).getStudentSSN() + "'" +")");
+				statement.executeUpdate("INSERT INTO Class(year, student_id) VALUES(" + m_filedata.getListOfData().get(0).getStudentClassYear() + ", " + m_filedata.getListOfData().get(0).getStudentId() + ")");
 			}
 			// course
 			if(table == "course"){
-			statement.executeUpdate("INSERT INTO Course(name, teacher_id) VALUES(" + "'" + m_filedata.getListOfData().get(0).getCourseName() + "'" + ", " + m_filedata.getListOfData().get(0).getTeacherId() + ")" );
+				if(m_filedata.getListOfData().get(0).getCourseName() == null || m_filedata.getListOfData().get(0).getTeacherId() == 0){return;}
+				statement.executeUpdate("INSERT INTO Course(name, teacher_id) VALUES(" + "'" + m_filedata.getListOfData().get(0).getCourseName() + "'" + ", " + m_filedata.getListOfData().get(0).getTeacherId() + ")" );
 			}
 			// grade
 			if(table == "grade"){
-			statement.executeUpdate("INSERT INTO Grade(student_id, course_id, value) VALUES(" + m_filedata.getListOfData().get(0).getStudentId() + ", " + m_filedata.getListOfData().get(0).getCourseId() + ", " + m_filedata.getListOfData().get(0).getGrade() + ")");
+				if(m_filedata.getListOfData().get(0).getGrade() == 0){return;}
+				statement.executeUpdate("INSERT INTO Grade(student_id, course_id, value) VALUES(" + m_filedata.getListOfData().get(0).getStudentId() + ", " + m_filedata.getListOfData().get(0).getCourseId() + ", " + m_filedata.getListOfData().get(0).getGrade() + ")");
 			}
-			// class (för id hämta längden av student plussa på med 1
+			// class (för id hämta längden av student plussa på med 1 TA BORT CLASS HELT DEN FINNS I STUDENT SOM NR 2
 			if(table == "studentAndClass"){
-				statement.executeUpdate("INSERT INTO Class(year, student_id) VALUES(" + m_filedata.getListOfData().get(0).getStudentClassYear() + ", " + m_filedata.getListOfData().get(0).getStudentId() + ")");
+				//statement.executeUpdate("INSERT INTO Class(year, student_id) VALUES(" + m_filedata.getListOfData().get(0).getStudentClassYear() + ", " + m_filedata.getListOfData().get(0).getStudentId() + ")");
 			}
-			connection.commit();
+			isInTheDB = false;
+			System.out.println("Connection: " + connection);
+			connection.commit(); // ger sqlitebusy database file is locked ERROR
+			System.out.println("The data was successfully saved in the database");
 		}catch(Exception e){
 			System.err.println("An error occurred. The data was not saved properly. Please try again!!!");
 			System.err.println(e.getMessage());
+			System.err.println(e.getLocalizedMessage());
+			
+			
 			connection.rollback();
 		}
 	}
+	public ResultSet getRS(){
+		return this.rs;
+	}
+	// behövs ej nu när connection är public
 	public Connection getConn(){
 		return connection;
 	}
+	// Checks if the student or teacher already exists in the database (metoden körs varje gång vi ska lägga till student or teacher och då ska den vara false och varje gång 
+	// vi ska hämta ut data om student or teacher och då ska den vara true FORTSÄTT HÄR!!!!!!******************
+	public boolean isStudentOrTeacherInDB(String SSN, String theTable) {
+		int id = 0;
+		System.out.println("i övre tryen");
+		id = getStudentOrTeacherId(SSN,theTable);
+		System.out.println("innåti isStudentOrTeacherInDB, id är: " + id);
+		if(id == 0){ //går aldrig in i ifen
+			System.out.println("i ifen");
+			isInTheDB = false;
+			return isInTheDB;
+		}
+		isInTheDB = true;	
+		return isInTheDB;
+	}
 	/* QUERIES WHO FETCH DATA TO SUPPORT THE INSERT METODS*/
 	// If the social security number for student or teacher exists in the database, this method returns the id for that row
-	public ResultSet getStudentOrTeacherId(String SSN, String theTable)throws SQLException {
-		
+	public int getStudentOrTeacherId(String SSN, String theTable) { 
+		rs = null;
+		int id = 0;
+		try {
+			System.out.println("INNE I TRYEN I GETSTUDENTORTEACHERID");
+			System.out.println("INNAN RS I GETSTUDENTORTEACHERID");
 			rs = statement.executeQuery("SELECT id FROM " + theTable + " WHERE SSN = '" + SSN + "'");
-			return rs;		
+			System.out.println("EFTER RS I GETSTUDENTORTEACHERID");
+			while(rs.next()){ //resultsetten blir closed om inte while loopen är med!!!!!!!!!!!!
+				System.out.println("Innåti whileloopen där jag sätter värdet på id innåti getstudentorteacherid");
+				id = rs.getInt("id");
+			}
+			System.out.println("efter rs. SSN är: " + SSN);
+		} catch (SQLException e) { //SQLEXception ResultSet closed
+			System.out.println("innåti catchen på getstudentorteahcerid");
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return id;		
 	}
 	// If the course name exits in the database, this method returns the id for that row
-	public ResultSet getCourseId(String theName)throws SQLException{
-		rs = statement.executeQuery("SELECT id FROM Course WHERE name = '" + theName + "'");
-		return rs;	
+	public int getCourseId(String theName){
+		rs = null;
+		int id = 0;
+		try {
+			rs = statement.executeQuery("SELECT id FROM Course WHERE name = '" + theName + "'");
+			while(rs.next()){
+				id = rs.getInt("id");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return id;	
 	}
 	// If the students or teachers social security number exists in the database, this method returns the name of that person
-	public ResultSet getStudentOrTeacherName(String theSSN, String theTable)throws SQLException{
-		rs = statement.executeQuery("SELECT name FROM " + theTable + " WHERE SSN = '" + theSSN + "'");
-		return rs;	
+	public String getStudentOrTeacherName(String theSSN, String theTable){
+		ResultSet r = null;
+		String theName = null;
+		try {
+			r = statement.executeQuery("SELECT name FROM " + theTable + " WHERE SSN = '" + theSSN + "'");
+			while(r.next()){ //whilen är tillagt efteråt ta bort om det blir probs OBS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				theName = r.getString("name");
+			}	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			try {
+				r.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return theName;	
 	}
-	// Gets the insert id of student by count the length of student table and add with one (used to insert the student_id in class table the same time as creating the student)
-	public ResultSet getInsertIdFromStudent()throws SQLException{
-		rs = statement.executeQuery("SELECT COUNT(*) AS presentId FROM Student");
+	// metoden först
+/*	public ResultSet getStudentOrTeacherName(String theSSN, String theTable){
+		ResultSet r = null;
+		try {
+			r = statement.executeQuery("SELECT name FROM " + theTable + " WHERE SSN = '" + theSSN + "'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			try {
+				r.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return r;	
+	}*/
+	// Gets the insert id of student by count the length of student table and add it with one (used to insert the student_id in class table the same time as creating the student)
+	/*public ResultSet getInsertIdFromStudent(){	FIRST
+		rs = null;
+		try {
+			rs = statement.executeQuery("SELECT COUNT(*) AS presentId FROM Student");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		return rs;	
+	}*/
+	// test
+	public int getInsertIdFromStudent(){
+		rs = null;
+		int theID = 0;
+		try {
+			rs = statement.executeQuery("SELECT COUNT(*) AS presentId FROM Student");
+			while(rs.next()){
+				theID = rs.getInt("presentId");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return theID;	
 	}
 	/* QUERIES WHO FETCH DATA FROM THE DATABASE FOR THE OUTPUT MENU*/
 	// 1. Get average of grade from the whole school FUNKAR!!!!
-	public ResultSet getAvgGradeSchool() throws SQLException {
-		rs = statement.executeQuery("SELECT AVG(value) AS AVGvalue FROM Grade");
+	public ResultSet getAvgGradeSchool() {
+		rs = null;
+		try {
+			rs = statement.executeQuery("SELECT AVG(value) AS AVGvalue FROM Grade");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
 		return rs;	
 	}
 	// 2. Get average of grade from a specific course FUNKAR!!!!
-	public ResultSet getAvgGradeCourse(String theCourse) throws SQLException {
-		rs = statement.executeQuery("SELECT AVG(Grade.value) AS AVGvalue FROM Course LEFT JOIN Grade ON (Course.id = Grade.course_id) WHERE Course.name = " + "'" + theCourse + "'");
+	public ResultSet getAvgGradeCourse(String theCourse) {
+		rs = null;
+		try {
+			rs = statement.executeQuery("SELECT AVG(Grade.value) AS AVGvalue FROM Course LEFT JOIN Grade ON (Course.id = Grade.course_id) WHERE Course.name = " + "'" + theCourse + "'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return rs;	
 	
 	}
 	// 3. Get average of grade on a specific student JOBBA HÄR!!!
-	public ResultSet getAvgGradeStudent(String theStudent) throws SQLException {
-		rs = statement.executeQuery("SELECT AVG(value) AS AVGvalue FROM Grade LEFT JOIN Student ON (Grade.student_id = Student.id) WHERE Student.name = " + "'" + theStudent + "'");
+	public ResultSet getAvgGradeStudent(String theStudent) {
+		rs = null;
+		try {
+			rs = statement.executeQuery("SELECT AVG(value) AS AVGvalue FROM Grade LEFT JOIN Student ON (Grade.student_id = Student.id) WHERE Student.name = " + "'" + theStudent + "'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
 		return rs;	
 		
 	}
-	// 4. Which courses does a specific student perform best in (is a "5-student" in)
-	public ResultSet getAGradedCoursesForStudent(String theStudent) throws SQLException {
-		rs= statement.executeQuery("SELECT Course.name FROM Course LEFT JOIN Grade ON (Course.id = Grade.course_id) LEFT JOIN Student ON (Student.id = Grade.student_id) WHERE Student.name = " + "'" + theStudent + "' AND Grade.value = 5");
+	// 4. Which courses does a specific student performs best in (is a "5-student" in)
+	public ResultSet getAGradedCoursesForStudent(String theStudent) {
+		rs = null;
+		try {
+			rs= statement.executeQuery("SELECT Course.name FROM Course LEFT JOIN Grade ON (Course.id = Grade.course_id) LEFT JOIN Student ON (Student.id = Grade.student_id) WHERE Student.name = " + "'" + theStudent + "' AND Grade.value = 5");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
 		return rs;			
 	}
 	// 5. Get all the grades in all the courses for a specific student
-	public ResultSet getAllGradesForStudent(String theStudent) throws SQLException {
-		//System.out.println("SELECT Course.name FROM Course LEFT JOIN Grade ON (Course.id = Grade.course_id) LEFT JOIN Student ON (Grade.student_id = Student.id) WHERE Student.name = " + "'" + theStudent + "' UNION SELECT Grade.value FROM Grade LEFT JOIN Course ON (Grade.course_id = Course.id) LEFT JOIN Student ON (Grade.student_id = Student.id) WHERE Student.name = " + "'" + theStudent + "' ");
-		//rs = statement.executeQuery("SELECT Course.name FROM Course LEFT JOIN Grade ON (Course.id = Grade.course_id) LEFT JOIN Student ON (Grade.student_id = Student.id) WHERE Student.name = " + "'" + theStudent + "' UNION SELECT Grade.value FROM Grade LEFT JOIN Course ON (Grade.course_id = Course.id) LEFT JOIN Student ON (Grade.student_id = Student.id) WHERE Student.name = " + "'" + theStudent + "' ");¨
-		//rs = statement.executeQuery("SELECT Course.name FROM Course LEFT JOIN Grade ON (Course.id = Grade.course_id) LEFT JOIN Student ON (Grade.student_id = Student.id) WHERE Student.name = 'Anna Book' UNION SELECT Grade.value AS gradeValue FROM Grade LEFT JOIN Course ON (Grade.course_id = Course.id) LEFT JOIN Student ON (Grade.student_id = Student.id) WHERE Student.name = 'Anna Book'");
-		
-		//rs = statement.executeQuery("SELECT Grade.value AS gradeValue FROM Grade LEFT JOIN Course ON (Grade.course_id = Course.id) LEFT JOIN Student ON (Grade.student_id = Student.id) WHERE Student.name = 'Anna Book'");
-		//rs = statement.executeQuery("SELECT Course.name FROM Course LEFT JOIN Grade ON (Course.id = Grade.course_id) LEFT JOIN Student ON (Grade.student_id = Student.id) WHERE Student.name = 'Anna Book' UNION SELECT Grade.value FROM Grade LEFT JOIN Course ON (Grade.course_id = Course.id) LEFT JOIN Student ON (Grade.student_id = Student.id) WHERE Student.name = 'Anna Book'");
-		rs = statement.executeQuery("SELECT Course.name, Grade.value FROM Course Course LEFT JOIN Grade ON (Course.id = Grade.course_id) LEFT JOIN Student ON (Grade.student_id = Student.id) WHERE Student.name = " + "'" + theStudent + "' ");
+	public ResultSet getAllGradesForStudent(String theStudent) {
+		rs = null;
+		try {
+			rs = statement.executeQuery("SELECT Course.name, Grade.value FROM Course Course LEFT JOIN Grade ON (Course.id = Grade.course_id) LEFT JOIN Student ON (Grade.student_id = Student.id) WHERE Student.name = " + "'" + theStudent + "' ");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
 		return rs;	
-// FUNKAR SELECT Course.name FROM Course LEFT JOIN Grade ON (Course.id = Grade.course_id) LEFT JOIN Student ON (Student.id = Grade.student_id) WHERE Student.name = "Agnes Carlsson" UNION SELECT Grade.value FROM Course LEFT JOIN Grade ON (Course.id = Grade.course_id) LEFT JOIN Student ON (Student.id = Grade.student_id) WHERE Student.name = "Agnes Carlsson";
 	}
 	
 }
