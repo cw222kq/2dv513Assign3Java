@@ -15,7 +15,7 @@ import java.sql.Statement;
  */
 public class DB {
 	
-	public Connection connection;
+	Connection connection;
 	Statement statement;
 	ResultSet rs;
 	boolean isInTheDB = true;
@@ -48,10 +48,7 @@ public class DB {
 			if(table == "teacher"){
 				if(isInTheDB) {return;}
 				if(m_filedata.getListOfData().get(0).getTeacherName() == null){return;}
-				System.out.println("innan statment uppdate");
 				statement.executeUpdate("INSERT INTO Teacher(name,SSN)VALUES(" + "'" + m_filedata.getListOfData().get(0).getTeacherName() + "'" +  ", '" + m_filedata.getListOfData().get(0).getTeacherSSN() + "'" + ")");
-				System.out.println("INSERT INTO Teacher(name,SSN)VALUES(" + "'" + m_filedata.getListOfData().get(0).getTeacherName() + "'" +  ", '" + m_filedata.getListOfData().get(0).getTeacherSSN() + "'" + ")");
-				System.out.println("Efter executeUpdate");
 			}
 			// student
 			if(table == "studentAndClass"){
@@ -70,39 +67,22 @@ public class DB {
 				if(m_filedata.getListOfData().get(0).getGrade() == 0){return;}
 				statement.executeUpdate("INSERT INTO Grade(student_id, course_id, value) VALUES(" + m_filedata.getListOfData().get(0).getStudentId() + ", " + m_filedata.getListOfData().get(0).getCourseId() + ", " + m_filedata.getListOfData().get(0).getGrade() + ")");
 			}
-			// class (för id hämta längden av student plussa på med 1 TA BORT CLASS HELT DEN FINNS I STUDENT SOM NR 2
-			if(table == "studentAndClass"){
-				//statement.executeUpdate("INSERT INTO Class(year, student_id) VALUES(" + m_filedata.getListOfData().get(0).getStudentClassYear() + ", " + m_filedata.getListOfData().get(0).getStudentId() + ")");
-			}
 			isInTheDB = false;
-			System.out.println("Connection: " + connection);
-			connection.commit(); // ger sqlitebusy database file is locked ERROR
-			System.out.println("The data was successfully saved in the database");
+			connection.commit(); 
 		}catch(Exception e){
-			System.err.println("An error occurred. The data was not saved properly. Please try again!!!");
-			System.err.println(e.getMessage());
-			System.err.println(e.getLocalizedMessage());
-			
-			
+			e.printStackTrace();	
 			connection.rollback();
 		}
 	}
 	public ResultSet getRS(){
 		return this.rs;
 	}
-	// behövs ej nu när connection är public
-	public Connection getConn(){
-		return connection;
-	}
 	// Checks if the student or teacher already exists in the database (metoden körs varje gång vi ska lägga till student or teacher och då ska den vara false och varje gång 
 	// vi ska hämta ut data om student or teacher och då ska den vara true FORTSÄTT HÄR!!!!!!******************
 	public boolean isStudentOrTeacherInDB(String SSN, String theTable) {
 		int id = 0;
-		System.out.println("i övre tryen");
 		id = getStudentOrTeacherId(SSN,theTable);
-		System.out.println("innåti isStudentOrTeacherInDB, id är: " + id);
-		if(id == 0){ //går aldrig in i ifen
-			System.out.println("i ifen");
+		if(id == 0){ 
 			isInTheDB = false;
 			return isInTheDB;
 		}
@@ -115,17 +95,11 @@ public class DB {
 		rs = null;
 		int id = 0;
 		try {
-			System.out.println("INNE I TRYEN I GETSTUDENTORTEACHERID");
-			System.out.println("INNAN RS I GETSTUDENTORTEACHERID");
 			rs = statement.executeQuery("SELECT id FROM " + theTable + " WHERE SSN = '" + SSN + "'");
-			System.out.println("EFTER RS I GETSTUDENTORTEACHERID");
-			while(rs.next()){ //resultsetten blir closed om inte while loopen är med!!!!!!!!!!!!
-				System.out.println("Innåti whileloopen där jag sätter värdet på id innåti getstudentorteacherid");
+			while(rs.next()){ 
 				id = rs.getInt("id");
 			}
-			System.out.println("efter rs. SSN är: " + SSN);
-		} catch (SQLException e) { //SQLEXception ResultSet closed
-			System.out.println("innåti catchen på getstudentorteahcerid");
+		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			try {
@@ -162,7 +136,7 @@ public class DB {
 		String theName = null;
 		try {
 			r = statement.executeQuery("SELECT name FROM " + theTable + " WHERE SSN = '" + theSSN + "'");
-			while(r.next()){ //whilen är tillagt efteråt ta bort om det blir probs OBS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			while(r.next()){ 
 				theName = r.getString("name");
 			}	
 		} catch (SQLException e) {
@@ -280,6 +254,19 @@ public class DB {
 			e.printStackTrace();
 		} 
 		return rs;	
+	}
+	// closing the resultset and the connection
+	public void closeConnection(){
+		try {
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		try {
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }
