@@ -11,11 +11,9 @@ import java.sql.SQLException;
  */
 public class App {
 	
-	// initiates the values
 	char inputResult;
 	public boolean run = true;
 	String table;
-	//view.Console a_view = new view.Console();
 	model.Student a_student = new model.Student();
 	model.Course a_course = new model.Course();
 	model.Teacher a_teacher = new model.Teacher();
@@ -27,8 +25,6 @@ public class App {
 	// run app if true, if false stop
 	public boolean runApp(view.Console a_view){
 		
-		System.out.println("Börjar metoden runApp");
-		
 		// connect to the db if the connection is null
 		try {
 			a_db.connect();
@@ -38,12 +34,8 @@ public class App {
 			a_view.printErrorMessage(ex);
 		}
 		
-		System.out.println("efter connect");
-	
 		a_view.printStartMenu();
-		
-		System.out.println("Efter startmenu");
-		
+			
 		// getting the input from the user
 		a_view.setUsersChoice();
 		inputResult = a_view.getUsersChoice();
@@ -51,7 +43,6 @@ public class App {
 		// Q = quit
 		if(inputResult == 'Q') {
 			a_view.quit(a_db);
-			//return false;
 			run = false;
 		}
 		
@@ -66,12 +57,10 @@ public class App {
 			inputResult = a_view.getUsersChoice();
 			
 			// teacher
-			if(inputResult == '1'){ // FORTS HÄR!!!!!!!!
-				table = "teacher";
-				//while(a_teacher.getSSN().length() == 13 && a_teacher.getSSN().charAt(8) == '-' ){
-					a_view.printInsertTeacher(a_teacher, a_db);
-					a_data.setTeacherName(a_teacher.getName());
-				//}
+			if(inputResult == '1'){
+				table = "teacher";	
+				a_view.printInsertTeacher(a_teacher, a_db);
+				a_data.setTeacherName(a_teacher.getName());
 				a_data.setTeacherSSN(a_teacher.getSSN());
 				inputResult = 0;
 				

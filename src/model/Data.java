@@ -1,16 +1,13 @@
-/** Delete this class. It is divided into the classes Student, Course and Teather instead
+/** 
  * 
  */
 package model;
-
-import java.io.Serializable;
 
 /**
  * @author cw222kq
  *
  */
-@SuppressWarnings("serial")
-public class Data implements Serializable{
+public class Data {
 
 	private int studentClassYear;
 	private int studentId;
@@ -85,14 +82,5 @@ public class Data implements Serializable{
 	public String getTeacherSSN(){
 		return this.teacherSSN;
 	}
-	/*@Override
-	public String toString(){
-		return "Student id: " + this.studentId + ", " + "Student name: " + this.studentName + ", " + "Årskurs: " + this.studentYear + ", " + "Kursid: " + this.courseId + ", " + "Betyg: " + this.grade + ", " + "Kursnamn: " + this.courseName + ", " + "Lärarid: " + this.teacherId + ", " + "Lärare: "  + this.teacherName;
-		
-	}*/
-	/*@Override
-	public String toString(){
-		return this.userName + "\t" + this.points;
-	}*/
-
+	
 }

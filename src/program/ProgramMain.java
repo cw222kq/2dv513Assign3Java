@@ -20,17 +20,10 @@ public class ProgramMain {
 		view.Console c = new Console();
 		controller.App p = new App();
 		
-	
-		// while app is true run the program
-		//while(p.runApp(c));
 		while(p.run){
 			p.runApp(c);
 		}
 		
-		// körs
-		//p.runApp(c);
-		
-
 	}
 
 }

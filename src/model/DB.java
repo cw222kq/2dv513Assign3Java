@@ -27,7 +27,6 @@ public class DB {
 	}
 	public void connect() throws SQLException, ClassNotFoundException {
 	
-		
 		Class.forName("org.sqlite.JDBC");
 		
 		connection = DriverManager.getConnection("jdbc:sqlite:database/school.db");
@@ -41,6 +40,7 @@ public class DB {
 		statement.executeUpdate("CREATE TABLE IF NOT EXISTS Class(id INTEGER PRIMARY KEY AUTOINCREMENT, year INTEGER NOT NULL, student_id INTEGER, FOREIGN KEY(student_id) REFERENCES Student(id) ON UPDATE CASCADE)");
 		
 	}
+	// Inserts data to the different tables that is in the db
 	public void insert(model.FileData m_filedata,String table)throws SQLException {
 		try{
 			connection.setAutoCommit(false);
@@ -50,7 +50,7 @@ public class DB {
 				if(m_filedata.getListOfData().get(0).getTeacherName() == null){return;}
 				statement.executeUpdate("INSERT INTO Teacher(name,SSN)VALUES(" + "'" + m_filedata.getListOfData().get(0).getTeacherName() + "'" +  ", '" + m_filedata.getListOfData().get(0).getTeacherSSN() + "'" + ")");
 			}
-			// student
+			// student and class
 			if(table == "studentAndClass"){
 				if(isInTheDB) {return;}
 				if(m_filedata.getListOfData().get(0).getStudentName() == null){return;}
@@ -77,8 +77,8 @@ public class DB {
 	public ResultSet getRS(){
 		return this.rs;
 	}
-	// Checks if the student or teacher already exists in the database (metoden körs varje gång vi ska lägga till student or teacher och då ska den vara false och varje gång 
-	// vi ska hämta ut data om student or teacher och då ska den vara true FORTSÄTT HÄR!!!!!!******************
+	// Checks if the student or teacher already exists in the database
+	// This method is executed each time we want to add a new person (teacher or student) to the db, to check if she/he already exists
 	public boolean isStudentOrTeacherInDB(String SSN, String theTable) {
 		int id = 0;
 		id = getStudentOrTeacherId(SSN,theTable);
@@ -89,7 +89,7 @@ public class DB {
 		isInTheDB = true;	
 		return isInTheDB;
 	}
-	/* QUERIES WHO FETCH DATA TO SUPPORT THE INSERT METODS*/
+	/* QUERIES THAT FETCH DATA TO SUPPORT THE INSERT METODS*/
 	// If the social security number for student or teacher exists in the database, this method returns the id for that row
 	public int getStudentOrTeacherId(String SSN, String theTable) { 
 		rs = null;
@@ -150,39 +150,7 @@ public class DB {
 		}
 		return theName;	
 	}
-	// metoden först
-/*	public ResultSet getStudentOrTeacherName(String theSSN, String theTable){
-		ResultSet r = null;
-		try {
-			r = statement.executeQuery("SELECT name FROM " + theTable + " WHERE SSN = '" + theSSN + "'");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally{
-			try {
-				r.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return r;	
-	}*/
-	// Gets the insert id of student by count the length of student table and add it with one (used to insert the student_id in class table the same time as creating the student)
-	/*public ResultSet getInsertIdFromStudent(){	FIRST
-		rs = null;
-		try {
-			rs = statement.executeQuery("SELECT COUNT(*) AS presentId FROM Student");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				rs.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return rs;	
-	}*/
-	// test
+	// Returns the number of rows of the student table. The return value is added with one to get the new students id for the class table, used when added new student to the db
 	public int getInsertIdFromStudent(){
 		rs = null;
 		int theID = 0;
@@ -203,7 +171,7 @@ public class DB {
 		return theID;	
 	}
 	/* QUERIES WHO FETCH DATA FROM THE DATABASE FOR THE OUTPUT MENU*/
-	// 1. Get average of grade from the whole school FUNKAR!!!!
+	// 1. Get average of grade from the whole school
 	public ResultSet getAvgGradeSchool() {
 		rs = null;
 		try {
@@ -213,7 +181,7 @@ public class DB {
 		} 
 		return rs;	
 	}
-	// 2. Get average of grade from a specific course FUNKAR!!!!
+	// 2. Get average of grade from a specific course
 	public ResultSet getAvgGradeCourse(String theCourse) {
 		rs = null;
 		try {
@@ -224,7 +192,7 @@ public class DB {
 		return rs;	
 	
 	}
-	// 3. Get average of grade on a specific student JOBBA HÄR!!!
+	// 3. Get average of grade on a specific student
 	public ResultSet getAvgGradeStudent(String theStudent) {
 		rs = null;
 		try {
@@ -255,12 +223,14 @@ public class DB {
 		} 
 		return rs;	
 	}
-	// closing the resultset and the connection
+	// Closes the result set and the connection. Executed when user wants to quit the application
 	public void closeConnection(){
-		try {
-			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if(rs != null){
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}	
 		}
 		try {
 			connection.close();

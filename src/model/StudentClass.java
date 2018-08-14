@@ -9,7 +9,6 @@ package model;
  */
 public class StudentClass {
 
-	// initiates the values
 	private String name;
 	private int year;
 	

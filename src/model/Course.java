@@ -9,24 +9,11 @@ package model;
  */
 public class Course {
 
-	// initiates the values
 	private int id;
 	private String name;
 	private int teacher_id;
 	
-	// Constructor with arguments to set the values
-	public Course(int id, String name, int teacher_id) {
-		
-		this.id = id;
-		this.name = name;
-		this.teacher_id = teacher_id;
-	}
-	// Constructor without arguments
-	public Course() {
-
-					
-	}
-	// creates getters for the values
+	// getters
 	public int getId(){
 		return this.id;
 	}
@@ -36,7 +23,7 @@ public class Course {
 	public int getTeacher_id(){
 		return this.teacher_id;
 	}
-	// creates getters for the values
+	// setters
 	public void setId(int newId){
 		this.id = newId;
 	}

@@ -9,24 +9,19 @@ package model;
  */
 public class Student {
 	
-	// initiates the values
 	private int id;
 	private String name;
-	//private int year;
 	private int course_id;
 	private int grade;
 	private String SSN;
 	
-	// creates getters for the values
+	// getters
 	public int getId(){
 		return this.id;
 	}
 	public String getName(){
 		return this.name;
 	}
-	/*public int getYear(){
-		return this.year;
-	}*/
 	public int getCourseId(){
 		return this.course_id;
 	}
@@ -36,16 +31,13 @@ public class Student {
 	public String getSSN(){
 		return this.SSN;
 	}
-	// creates setters for the values
+	// setters
 	public void setId(int inID){
 		this.id = inID;
 	}
 	public void setName(String newName){
 		this.name = newName;
 	}
-	/*public void setYear(int newYear){
-		this.year = newYear;
-	}*/
 	public void setCourseId(int newCourse_id){
 		this.course_id = newCourse_id;
 	}

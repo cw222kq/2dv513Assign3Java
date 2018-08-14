@@ -24,7 +24,7 @@ public class Console {
 	DecimalFormat df = new DecimalFormat("#.#");
 	private boolean validSSNLength = false;
 	
-	// Will be executed first
+	// Will be executed when the user starts the application
 	public void printStartMenu(){
 		if(start){
 			System.out.println("Welcome to Grade statistics!!!"); 
@@ -79,18 +79,11 @@ public class Console {
 		
 			
 	}
-	// Will be executed if the user choose Q from the start menu
+	// Will be executed if the user choose Q (quit) from the start menu
 	public void quit(model.DB m_db){
 		System.out.println("Q. Quit");
 		m_db.closeConnection();
 		System.exit(0);
-		
-	/*	try {
-			m_db.connection.close();
-		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-		}
-		//return true;*/
 	}
 	// Will be executed if the user choose 1 from the insert menu
 	public void printInsertTeacher(model.Teacher m_teacher, model.DB m_db){
@@ -126,28 +119,18 @@ public class Console {
 			}
 			if(m_student.getSSN().length() == 12){
 				validSSNLength = true;
-			}
-			
-			
+			}	
 		}
-		
-		/*while(m_student.getSSN().length() != 12){
-			validateInputString("Insert students social security number(yyyymmddxxxx)", true);
-			if(m_db.isStudentOrTeacherInDB(m_student.getSSN(),"student") == true){
-				System.err.println("The student already exists in the database");
-				System.out.println("innåti insertstudentorteacher i consoleklassen");
-				return;
-			}
-		}*/
 		validSSNLength = false;
 		validateInputString("Insert student name", false);
 		m_student.setName(scanner.nextLine());
 		// Gets the last saved students id
 		int studentId = m_db.getInsertIdFromStudent();
-		// Adding it with one to get this students id
+		// Adding it with one to get this students id (used for adding student id to the class table when adding new student) 
 		studentId++;
 		m_student.setId(studentId);
 		
+		// Confirms the users input
 	    System.out.println("Student year: " + m_studentClass.getYear() + ", Student social security number: " + m_student.getSSN()+ ", Student name: " + m_student.getName());
 	}
 	// Will be executed if the user choose 3 from the insert menu
@@ -167,9 +150,11 @@ public class Console {
 		m_teacher.setId(theId);
 		theName = m_db.getStudentOrTeacherName(m_teacher.getSSN(),"Teacher");
 		m_teacher.setName(theName);
+		
+		// Confirms the users input
 		System.out.println("Course: " + m_course.getName() + ", Teacher security number: " + m_teacher.getSSN() + ", Teacher name: " + m_teacher.getName());					
 	}
-	// Will be executed if the user choose 4 from the insert menu FUNKAR OM MAN FYLLER I FEL PERSONNR BÖRJAR DEN OM
+	// Will be executed if the user choose 4 from the insert menu
 	public void printInsertGrade(model.Student m_student, model.Course m_course, model.DB m_db, model.StudentClass m_studentClass){
 		int theId = 0;
 		String theName = null;
@@ -197,6 +182,8 @@ public class Console {
 		
 		validateInputInteger("Insert " + m_student.getName() + "s grade");
 		m_student.setGrade(scan.nextInt());
+		
+		// Confirms the users input
 		System.out.println("Year: " + m_studentClass.getYear() + ", Name: " + m_student.getName() + ", Course: " + m_course.getName() + ", Grade: " + m_student.getGrade());	
 	}
 	public void setUsersChoice(){
@@ -208,29 +195,8 @@ public class Console {
 	public void printErrorMessage(Exception e){
 		System.err.println(e.getMessage());
 	}
-	// validate the input value and checks that it is can't be parsed to an integer if its not a social security number FORTS HÄR!!!!!!!!!!!
-	/* metodenprotected void validateInputString(String inputMessage, boolean SSN){
-		System.out.println("Inne i BÖRJAN av validateInputString i consoleklassen");
-		valid = false;
-		while (valid == false) {
-			System.out.println(inputMessage);
-			scanner = new Scanner(System.in);
-			if(!scanner.hasNextInt()){
-				valid = true;
-				if(SSN == true){
-					
-				}
-			}
-			else {
-				System.err.println("The input value have to be a STRING. Try again!");
-				continue;
-			}		
-		}
-		System.out.println("Inne i SLUTET av validateInputString i consoleklassen");
-	}*/
-	// test
-	protected void validateInputString(String inputMessage, boolean SSN){		// FORTSÄTT HÄR PERSONNUMMER
-		System.out.println("Inne i BÖRJAN av validateInputString i consoleklassen");
+	// validate the input value and checks that it can be parsed to a long(to check that it is a number, and not chars)
+	protected void validateInputString(String inputMessage, boolean SSN){	
 		valid = false;
 		while (valid == false) {
 			System.out.println(inputMessage);
@@ -254,7 +220,7 @@ public class Console {
 				}		
 			}
 		}	
-		System.out.println("Inne i SLUTET av validateInputString i consoleklassen");
+
 	}
 	// validate the input value and checks that it is an integer
 	protected void validateInputInteger(String inputMessage){
@@ -271,7 +237,7 @@ public class Console {
 			}
 		}
 	}
-	// print out successful message about inserting the data in the database
+	// print out successful message about inserting the data into the database
 	public void printSuccessfullyMessage(){
 		System.out.println("The data was successfully inserted into the database");
 	}
