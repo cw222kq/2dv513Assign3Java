@@ -217,7 +217,7 @@ public class DB {
 	public ResultSet getAllGradesForStudent(String theStudent) {
 		rs = null;
 		try {
-			rs = statement.executeQuery("SELECT Course.name, Grade.value FROM Course Course LEFT JOIN Grade ON (Course.id = Grade.course_id) LEFT JOIN Student ON (Grade.student_id = Student.id) WHERE Student.name = " + "'" + theStudent + "' ");
+			rs = statement.executeQuery("SELECT Course.name, Grade.value FROM Course LEFT JOIN Grade ON (Course.id = Grade.course_id) LEFT JOIN Student ON (Grade.student_id = Student.id) WHERE Student.name = " + "'" + theStudent + "' ");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} 

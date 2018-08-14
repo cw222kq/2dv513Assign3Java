@@ -180,7 +180,7 @@ public class Console {
 		theId = m_db.getCourseId(m_course.getName());
 		m_course.setId(theId);
 		
-		validateInputInteger("Insert " + m_student.getName() + "s grade");
+		validateInputInteger("Insert " + m_student.getName() + "s grade (1-5)");
 		m_student.setGrade(scan.nextInt());
 		
 		// Confirms the users input
